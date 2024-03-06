@@ -1,4 +1,4 @@
-#include "Constant.h"
+#include "Constants.h"
 #include "Object.h"
 
 SDL_Window *window;
@@ -64,17 +64,17 @@ void close()
     SDL_DestroyRenderer(renderer);
     renderer = NULL;
 }
+
 int main(int argc, char *argv[])
 {
 
     // Start up SDL and create window
-    if (!init)
+    if (!init())
     {
         std::cout << "Failed to initialize!\n";
     }
     else
     {
-        // Load media
         if (!backGround.LoadIMG("res/background.png", renderer))
         {
             std::cout << "Failed to load media!\n";
@@ -98,6 +98,8 @@ int main(int argc, char *argv[])
                 SDL_RenderClear(renderer);
 
                 backGround.render(renderer);
+
+                SDL_RenderPresent(renderer);
             }
         }
     }

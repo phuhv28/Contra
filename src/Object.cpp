@@ -2,10 +2,10 @@
 
 Object::Object()
 {
-    rect->x = 0;
-    rect->y = 0;
-    rect->w = 0;
-    rect->h = 0;
+    rect.x = 0;
+    rect.y = 0;
+    rect.w = 0;
+    rect.h = 0;
 }
 
 Object::~Object()
@@ -14,8 +14,8 @@ Object::~Object()
 
 void Object::setRect(int x, int y)
 {
-    rect->x = x;
-    rect->y = y;
+    rect.x = x;
+    rect.y = y;
 }
 
 bool Object::LoadIMG(std::string path, SDL_Renderer *renderer)
@@ -38,19 +38,21 @@ bool Object::LoadIMG(std::string path, SDL_Renderer *renderer)
         }
         else
         {
-            setRect(loadedSurface->w, loadedSurface->h);
+            rect.w = loadedSurface->w;
+            rect.h = loadedSurface->h;
         }
 
         SDL_FreeSurface(loadedSurface);
     }
 
     texture = newTexture;
+
     return texture != NULL;
 }
 
-void Object::render(SDL_Renderer *renderer, SDL_Rect *clip)
+void Object::render(SDL_Renderer *renderer, const SDL_Rect *clip)
 {
-    SDL_RenderCopy(renderer, texture, clip, rect);
+    SDL_RenderCopy(renderer, texture, NULL, &rect);
 }
 
 void Object::free()
@@ -59,7 +61,7 @@ void Object::free()
     {
         SDL_DestroyTexture(texture);
         texture = NULL;
-        rect->w = 0;
-        rect->h = 0;
+        rect.w = 0;
+        rect.h = 0;
     }
 }
