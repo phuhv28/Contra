@@ -1,5 +1,6 @@
 #include "Constants.h"
 #include "Object.h"
+#include "Player.h"
 
 SDL_Window *window;
 SDL_Renderer *renderer;
@@ -75,13 +76,16 @@ int main(int argc, char *argv[])
     }
     else
     {
-        if (!backGround.LoadIMG("res/background.png", renderer))
+        if (!backGround.loadIMG("res/background.png", renderer))
         {
             std::cout << "Failed to load media!\n";
         }
         else
         {
             bool quit = false;
+
+            Player player;
+            player.loadIMG("res/walking_right.png", renderer);
 
             SDL_Event e;
 
@@ -93,11 +97,15 @@ int main(int argc, char *argv[])
                     {
                         quit = true;
                     }
+
+                    player.handleInput(e, renderer);
                 }
                 SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
                 SDL_RenderClear(renderer);
 
                 backGround.render(renderer);
+
+                player.show(renderer);
 
                 SDL_RenderPresent(renderer);
             }

@@ -18,7 +18,7 @@ void Object::setRect(int x, int y)
     rect.y = y;
 }
 
-bool Object::LoadIMG(std::string path, SDL_Renderer *renderer)
+bool Object::loadIMG(std::string path, SDL_Renderer *renderer)
 {
     SDL_Texture *newTexture = NULL;
 

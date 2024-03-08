@@ -11,7 +11,7 @@ public:
     void setRect(int x, int y);
     SDL_Rect getRect() const { return rect; }
     SDL_Texture *getTexture() const { return texture; }
-    bool LoadIMG(std::string path, SDL_Renderer *renderer);
+    virtual bool loadIMG(std::string path, SDL_Renderer *renderer);
     void render(SDL_Renderer *renderer, const SDL_Rect *clip = NULL);
     void free();
 
