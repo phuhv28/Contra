@@ -85,8 +85,8 @@ int main(int argc, char *argv[])
         {
             bool quit = false;
 
-            // GameMap map;
-            // map.loadMap("map/map.txt");
+            GameMap map;
+            map.loadMap("map/map.txt");
 
             Player player;
             player.loadIMG("res/right.png", renderer);
