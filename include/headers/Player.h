@@ -29,7 +29,7 @@ public:
     void handleInput(SDL_Event e, SDL_Renderer *renderer);
 
 private:
-    int ValX, ValY;
+    int VelX, VelY;
     int x, y;
     int frameW, frameH;
     SDL_Rect frameClip[numFrame];
