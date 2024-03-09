@@ -1,6 +1,7 @@
 #include "Constants.h"
 #include "Object.h"
 #include "Player.h"
+#include "Map.h"
 
 SDL_Window *window;
 SDL_Renderer *renderer;
@@ -84,8 +85,11 @@ int main(int argc, char *argv[])
         {
             bool quit = false;
 
+            // GameMap map;
+            // map.loadMap("map/map.txt");
+
             Player player;
-            player.loadIMG("res/walking_right.png", renderer);
+            player.loadIMG("res/right.png", renderer);
 
             SDL_Event e;
 

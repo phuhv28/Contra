@@ -5,8 +5,8 @@ Player::Player()
     x = 0;
     y = 0;
     curFrame = 0;
-    ValX = 0;
-    ValY = 0;
+    VelX = 0;
+    VelY = 0;
     direction = Direction::RIGHT;
 }
 
@@ -21,8 +21,8 @@ bool Player::loadIMG(std::string path, SDL_Renderer *renderer)
         std::cout << "Error!";
     else
     {
-        frameW = rect.w / 6;
-        frameH = rect.h;
+        frameW = 60;
+        frameH = 105;
 
         for (int i = 0; i < 6; i++)
         {
@@ -31,6 +31,11 @@ bool Player::loadIMG(std::string path, SDL_Renderer *renderer)
             frameClip[i].w = frameW;
             frameClip[i].h = frameH;
         }
+
+        frameClip[6].x = 6 * frameW;
+        frameClip[6].y = 0;
+        frameClip[6].w = 69;
+        frameClip[6].h = 105;
     }
 
     return flag;
@@ -40,26 +45,26 @@ void Player::show(SDL_Renderer *renderer)
 {
     if (direction == Direction::LEFT)
     {
-        loadIMG("res/walking_left.png", renderer);
+        loadIMG("res/left.png", renderer);
     }
     else if (direction == Direction::RIGHT)
     {
-        loadIMG("res/walking_right.png", renderer);
+        loadIMG("res/right.png", renderer);
     }
 
     if (input == Input::LEFT || input == Input::RIGHT)
     {
         curFrame++;
-        if (curFrame >= 50)
+        if (curFrame >= 5)
             curFrame = 0;
     }
     else
-        curFrame = 0;
+        curFrame = 6;
 
     rect.x = x;
     rect.y = y;
 
-    SDL_Rect *curClip = &frameClip[curFrame/10];
+    SDL_Rect *curClip = &frameClip[curFrame];
     SDL_Rect renderQuad = {rect.x, rect.y, frameW, frameH};
 
     SDL_RenderCopy(renderer, texture, curClip, &renderQuad);
@@ -83,7 +88,7 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
             break;
         }
     }
-    if (e.type == SDL_KEYUP)
+    else if (e.type == SDL_KEYUP)
     {
         switch (e.key.keysym.sym)
         {
@@ -97,5 +102,4 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
             break;
         }
     }
-    
 }
