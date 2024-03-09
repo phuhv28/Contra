@@ -6,6 +6,56 @@
 SDL_Window *window;
 SDL_Renderer *renderer;
 Object backGround;
+Player player;
+GameMap map;
+
+bool init();
+void renderGamePlay();
+void close();
+
+int main(int argc, char *argv[])
+{
+
+    // Start up SDL and create window
+    if (!init())
+    {
+        std::cout << "Failed to initialize!\n";
+    }
+    else
+    {
+        if (!backGround.loadIMG("res/background.png", renderer))
+        {
+            std::cout << "Failed to load media!\n";
+        }
+        else
+        {
+            bool quit = false;
+
+            map.loadMap("map/map.txt");
+
+            player.loadIMG("res/right.png", renderer);
+
+            SDL_Event e;
+
+            while (!quit)
+            {
+                while (SDL_PollEvent(&e) != 0)
+                {
+                    if (e.type == SDL_QUIT)
+                    {
+                        quit = true;
+                    }
+
+                    player.handleInput(e, renderer);
+                }
+            }
+        }
+    }
+
+    close();
+
+    return 0;
+}
 
 bool init()
 {
@@ -58,6 +108,18 @@ bool init()
     return success;
 }
 
+void renderGamePlay()
+{
+    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_RenderClear(renderer);
+
+    backGround.render(renderer);
+
+    player.show(renderer);
+
+    SDL_RenderPresent(renderer);
+}
+
 void close()
 {
     backGround.free();
@@ -65,58 +127,4 @@ void close()
     window = NULL;
     SDL_DestroyRenderer(renderer);
     renderer = NULL;
-}
-
-int main(int argc, char *argv[])
-{
-
-    // Start up SDL and create window
-    if (!init())
-    {
-        std::cout << "Failed to initialize!\n";
-    }
-    else
-    {
-        if (!backGround.loadIMG("res/background.png", renderer))
-        {
-            std::cout << "Failed to load media!\n";
-        }
-        else
-        {
-            bool quit = false;
-
-            GameMap map;
-            map.loadMap("map/map.txt");
-
-            Player player;
-            player.loadIMG("res/right.png", renderer);
-
-            SDL_Event e;
-
-            while (!quit)
-            {
-                while (SDL_PollEvent(&e) != 0)
-                {
-                    if (e.type == SDL_QUIT)
-                    {
-                        quit = true;
-                    }
-
-                    player.handleInput(e, renderer);
-                }
-                SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-                SDL_RenderClear(renderer);
-
-                backGround.render(renderer);
-
-                player.show(renderer);
-
-                SDL_RenderPresent(renderer);
-            }
-        }
-    }
-
-    close();
-
-    return 0;
 }
