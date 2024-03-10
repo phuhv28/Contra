@@ -16,6 +16,8 @@ Player::~Player()
 
 bool Player::loadIMG(std::string path, SDL_Renderer *renderer)
 {
+    free();
+    
     bool flag = Object::loadIMG(path, renderer);
     if (!flag)
         std::cout << "Error!";
