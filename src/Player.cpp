@@ -17,7 +17,7 @@ Player::~Player()
 bool Player::loadIMG(std::string path, SDL_Renderer *renderer)
 {
     free();
-    
+
     bool flag = Object::loadIMG(path, renderer);
     if (!flag)
         std::cout << "Error!";
@@ -40,7 +40,7 @@ bool Player::loadIMG(std::string path, SDL_Renderer *renderer)
     return flag;
 }
 
-void Player::show(SDL_Renderer *renderer)
+void Player::show(SDL_Renderer *renderer, const SDL_Rect *camera)
 {
     if (direction == Direction::LEFT)
     {
@@ -60,11 +60,14 @@ void Player::show(SDL_Renderer *renderer)
     else
         curFrame = 6;
 
-    rect.x = x;
-    rect.y = y;
-
     SDL_Rect *curClip = &frameClip[curFrame];
-    SDL_Rect renderQuad = {rect.x, rect.y, curClip->w, curClip->h};
+
+    rect.x = x - camera->x;
+    rect.y = y - camera->y;
+    frameH = curClip->h;
+    frameW = curClip->w;
+
+    SDL_Rect renderQuad = {rect.x, rect.y, frameW, frameH};
 
     SDL_RenderCopy(renderer, texture, curClip, &renderQuad);
 }

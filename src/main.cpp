@@ -8,6 +8,7 @@ SDL_Renderer *renderer;
 Object backGround;
 Player player;
 GameMap map;
+SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
 bool init();
 void renderGamePlay();
@@ -114,11 +115,31 @@ void renderGamePlay()
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(renderer);
 
-    backGround.render(renderer);
+    camera.x = (player.getX() + player.getFrameW() / 2) - SCREEN_WIDTH / 2;
+    camera.y = (player.getY() + player.getFrameH() / 2) - SCREEN_HEIGHT / 2;
+
+    if (camera.x < 0)
+    {
+        camera.x = 0;
+    }
+    if (camera.y < 0)
+    {
+        camera.y = 0;
+    }
+    if (camera.x > MAX_MAP_X * TILE_SIZE - camera.w)
+    {
+        camera.x = MAX_MAP_X * TILE_SIZE - camera.w;
+    }
+    if (camera.y > MAX_MAP_Y * TILE_SIZE - camera.h)
+    {
+        camera.y = MAX_MAP_Y * TILE_SIZE - camera.h;
+    }
+
+    backGround.render(renderer, &camera);
 
     player.action(map.getMap());
 
-    player.show(renderer);
+    player.show(renderer, &camera);
 
     SDL_RenderPresent(renderer);
 }

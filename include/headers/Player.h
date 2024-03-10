@@ -25,9 +25,13 @@ public:
     ~Player();
 
     bool loadIMG(std::string path, SDL_Renderer *renderer);
-    void show(SDL_Renderer *renderer);
+    void show(SDL_Renderer *renderer, const SDL_Rect *camera);
     void handleInput(SDL_Event e, SDL_Renderer *renderer);
     void action(Map map);
+    int getX() { return x; }
+    int getY() { return y; }
+    int getFrameW() { return frameW;}
+    int getFrameH() { return frameH;}
 
 private:
     int VelX, VelY;

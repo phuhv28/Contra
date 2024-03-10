@@ -52,7 +52,16 @@ bool Object::loadIMG(std::string path, SDL_Renderer *renderer)
 
 void Object::render(SDL_Renderer *renderer, const SDL_Rect *clip)
 {
-    SDL_RenderCopy(renderer, texture, NULL, &rect);
+	SDL_Rect renderQuad = rect;
+
+    if (clip != NULL)
+    {
+        renderQuad.w = clip->w;
+		renderQuad.h = clip->h;
+    }
+
+
+    SDL_RenderCopy(renderer, texture, clip, &renderQuad);
 }
 
 void Object::free()
