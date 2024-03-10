@@ -27,6 +27,7 @@ public:
     bool loadIMG(std::string path, SDL_Renderer *renderer);
     void show(SDL_Renderer *renderer);
     void handleInput(SDL_Event e, SDL_Renderer *renderer);
+    void action(Map map);
 
 private:
     int VelX, VelY;

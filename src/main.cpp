@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
 
                     player.handleInput(e, renderer);
                 }
+                renderGamePlay();
             }
         }
     }
@@ -114,6 +115,8 @@ void renderGamePlay()
     SDL_RenderClear(renderer);
 
     backGround.render(renderer);
+
+    player.action(map.getMap());
 
     player.show(renderer);
 

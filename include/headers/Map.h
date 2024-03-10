@@ -11,6 +11,7 @@ public:
     GameMap() {};
     ~GameMap() {};
     void loadMap(std::string path);
+    Map getMap() { return gameMap; }
 
 private:
     Map gameMap;
