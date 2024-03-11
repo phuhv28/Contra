@@ -6,10 +6,13 @@
 #include <string>
 #include <SDL_image.h>
 #include <fstream>
+#include <chrono>
 
 
 const int SCREEN_WIDTH = 768;
 const int SCREEN_HEIGHT = 672;
+const int FPS = 60;
+const double SCREEN_TICKS_PER_FRAME = 1000.0 / FPS;
 
 const int numFrame = 7;
 

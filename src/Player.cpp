@@ -54,13 +54,13 @@ void Player::show(SDL_Renderer *renderer, const SDL_Rect *camera)
     if (input == Input::LEFT || input == Input::RIGHT)
     {
         curFrame++;
-        if (curFrame >= 5)
+        if (curFrame >= 50)
             curFrame = 0;
     }
     else
-        curFrame = 6;
+        curFrame = 60;
 
-    SDL_Rect *curClip = &frameClip[curFrame];
+    SDL_Rect *curClip = &frameClip[curFrame/10];
 
     rect.x = x - camera->x;
     rect.y = y - camera->y;

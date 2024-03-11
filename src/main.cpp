@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
 
             while (!quit)
             {
+                auto start = std::chrono::system_clock::now();
                 while (SDL_PollEvent(&e) != 0)
                 {
                     if (e.type == SDL_QUIT)
@@ -51,6 +52,14 @@ int main(int argc, char *argv[])
                 }
 
                 renderGamePlay();
+                auto end = std::chrono::system_clock::now();
+
+                std::chrono::duration<double> elapsedTime = end - start;
+
+                if( elapsedTime.count() < SCREEN_TICKS_PER_FRAME)
+                {
+                    SDL_Delay(SCREEN_TICKS_PER_FRAME - elapsedTime.count());
+                }
             }
         }
     }
@@ -86,7 +95,7 @@ bool init()
         }
         else
         {
-            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
             if (renderer == NULL)
             {
                 std::cout << "Renderer could not be created! SDL Error:\n"
