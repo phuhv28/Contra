@@ -62,8 +62,18 @@ void Player::show(SDL_Renderer *renderer, const SDL_Rect *camera)
 
     SDL_Rect *curClip = &frameClip[curFrame/10];
 
+    if (x < camera->x)
+        x = camera->x;
+    if (x > camera->x + SCREEN_WIDTH)
+        x = camera->x + SCREEN_WIDTH;
+    if (y < camera->y)
+        y = camera->y;
+    if (y > camera->y + SCREEN_HEIGHT)
+        y = camera->y + SCREEN_HEIGHT;
+
     rect.x = x - camera->x;
     rect.y = y - camera->y;
+
     frameH = curClip->h;
     frameW = curClip->w;
 
@@ -124,7 +134,7 @@ void Player::action(Map map)
     if (VelY == 0 &&
         (map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX) / TILE_SIZE] != 1 && map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX + frameClip[curFrame].w) / TILE_SIZE] != 1))
     {
-        VelY = 1;
+        VelY = GRAVITY;
         // std::cout << y << " ";
     }
 

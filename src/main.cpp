@@ -125,8 +125,10 @@ void renderGamePlay()
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(renderer);
 
-    camera.x = (player.getX() + player.getFrameW() / 2) - SCREEN_WIDTH / 2;
-    camera.y = (player.getY() + player.getFrameH() / 2) - SCREEN_HEIGHT / 2;
+    int tempX = (player.getX() + player.getFrameW() / 2) - SCREEN_WIDTH / 2;
+    if (tempX > camera.x) 
+        camera.x = tempX;
+    camera.y = 0;
 
     if (camera.x < 0)
     {
