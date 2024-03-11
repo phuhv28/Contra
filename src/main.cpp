@@ -11,6 +11,7 @@ GameMap map;
 SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
 bool init();
+void setCamera();
 void renderGamePlay();
 void close();
 
@@ -51,15 +52,15 @@ int main(int argc, char *argv[])
                     player.handleInput(e, renderer);
                 }
 
-                renderGamePlay();
                 auto end = std::chrono::system_clock::now();
 
                 std::chrono::duration<double> elapsedTime = end - start;
 
-                if( elapsedTime.count() < SCREEN_TICKS_PER_FRAME)
+                if (elapsedTime.count() < SCREEN_TICKS_PER_FRAME)
                 {
                     SDL_Delay(SCREEN_TICKS_PER_FRAME - elapsedTime.count());
                 }
+                renderGamePlay();
             }
         }
     }
@@ -120,13 +121,10 @@ bool init()
     return success;
 }
 
-void renderGamePlay()
+void setCamera()
 {
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-    SDL_RenderClear(renderer);
-
     int tempX = (player.getX() + player.getFrameW() / 2) - SCREEN_WIDTH / 2;
-    if (tempX > camera.x) 
+    if (tempX > camera.x)
         camera.x = tempX;
     camera.y = 0;
 
@@ -146,11 +144,17 @@ void renderGamePlay()
     {
         camera.y = MAX_MAP_Y * TILE_SIZE - camera.h;
     }
+}
 
-    backGround.render(renderer, &camera);
+void renderGamePlay()
+{
+    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_RenderClear(renderer);
 
     player.action(map.getMap());
 
+    setCamera();
+    backGround.render(renderer, &camera);
     player.show(renderer, &camera);
 
     SDL_RenderPresent(renderer);
