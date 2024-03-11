@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
 
                     player.handleInput(e, renderer);
                 }
+
                 renderGamePlay();
             }
         }

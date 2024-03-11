@@ -14,7 +14,7 @@ const int SCREEN_HEIGHT = 672;
 const int numFrame = 7;
 
 const int SPEED_X = 5;
-const int GRAVITY = 1;
+const int GRAVITY = 10;
 
 #define TILE_SIZE  96
 #define MAX_MAP_X  104

@@ -88,8 +88,6 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
             input = Input::LEFT;
             VelX -= SPEED_X;
             break;
-        default:
-            break;
         }
     }
     else if (e.type == SDL_KEYUP && e.key.repeat == 0)
@@ -97,29 +95,34 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
         switch (e.key.keysym.sym)
         {
         case SDLK_RIGHT:
-            input = Input::NO_INPUT;
             VelX -= SPEED_X;
+            if (VelX == 0)
+                input = Input::NO_INPUT;
             break;
         case SDLK_LEFT:
-            input = Input::NO_INPUT;
             VelX += SPEED_X;
-            break;
-        default:
+            if (VelX == 0)
+                input = Input::NO_INPUT;
             break;
         }
+
+        if (VelX > 0) direction = Direction::RIGHT;
+        if (VelX < 0) direction = Direction::LEFT;
     }
 }
 
 void Player::action(Map map)
 {
-    if (map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX) / TILE_SIZE] == 1 || map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX + frameClip[curFrame].w) / TILE_SIZE] == 1)
+    if (map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX) / TILE_SIZE] == 1 ||
+        map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX + frameClip[curFrame].w) / TILE_SIZE] == 1)
     {
         VelY = 0;
         y += VelY;
         // std::cout << y << " ";
     }
 
-    if (VelY == 0 && (map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX) / TILE_SIZE] != 1 || map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX + frameClip[curFrame].w) / TILE_SIZE] != 1))
+    if (VelY == 0 &&
+        (map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX) / TILE_SIZE] != 1 && map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX + frameClip[curFrame].w) / TILE_SIZE] != 1))
     {
         VelY = 1;
         // std::cout << y << " ";
@@ -133,5 +136,4 @@ void Player::action(Map map)
         x = 0;
     if (y < 0 || y > MAX_MAP_Y * TILE_SIZE)
         y = 0;
-
 }
