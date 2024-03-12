@@ -1,2 +1,24 @@
-all:
-	g++ -Iinclude/sdl -Iinclude/headers -Llib -o main src/*.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+# Khai báo biến
+SRC_DIR := src
+OBJ_DIR := obj
+INCLUDE_DIR := include
+LIB_DIR := lib
+EXECUTABLE := main
+
+# Danh sách các file nguồn
+SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp)
+
+# Danh sách các file object
+OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC_FILES))
+
+# Quy tắc mặc định để build từng file object
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	g++ -I$(INCLUDE_DIR)/sdl -I$(INCLUDE_DIR)/headers -c $< -o $@
+
+# Quy tắc để build chương trình thực thi
+$(EXECUTABLE): $(OBJ_FILES)
+	g++ -L$(LIB_DIR) -o $@ $^ -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+
+# Phần clean để xoá các file object
+clean:
+	del /Q $(OBJ_DIR)\*.o $(EXECUTABLE).exe
