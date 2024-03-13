@@ -7,6 +7,7 @@
 #include <SDL_image.h>
 #include <fstream>
 #include <chrono>
+#include <vector>
 
 
 const int SCREEN_WIDTH = 768;

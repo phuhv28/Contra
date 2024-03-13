@@ -9,7 +9,8 @@ enum class Input
 {
     NO_INPUT,
     LEFT,
-    RIGHT
+    RIGHT,
+    JUMP
 };
 
 struct Direction
@@ -38,11 +39,11 @@ private:
     int x, y;
     int frameW, frameH;
     SDL_Rect frameClip[numFrame];
-    Input input;
     int curFrame;
     Direction direction;
     bool onGround;
     int aCurFrame;
+    std::vector<Input> inputQueue;
 
 };
 
