@@ -9,6 +9,7 @@ Player::Player()
     VelY = GRAVITY;
     direction.right = true;
     onGround = false;
+    aCurFrame = 0;
 }
 
 Player::~Player()
@@ -54,14 +55,14 @@ void Player::show(SDL_Renderer *renderer, const SDL_Rect *camera)
 
     if (input == Input::LEFT || input == Input::RIGHT)
     {
-        curFrame++;
-        if (curFrame >= 5 * 4)
-            curFrame = 0;
+        aCurFrame++;
+        if (aCurFrame >= 5 * 4)
+            aCurFrame = 0;
     }
     else
-        curFrame = 6 * 4;
+        aCurFrame = 6 * 4;
     
-    curFrame /= 4;
+    curFrame = aCurFrame / 4;
 
     SDL_Rect *curClip = &frameClip[curFrame];
 

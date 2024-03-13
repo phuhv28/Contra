@@ -42,6 +42,7 @@ private:
     int curFrame;
     Direction direction;
     bool onGround;
+    int aCurFrame;
 
 };
 
