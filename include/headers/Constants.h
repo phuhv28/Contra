@@ -11,12 +11,12 @@
 
 const int SCREEN_WIDTH = 768;
 const int SCREEN_HEIGHT = 672;
-const int FPS = 60;
+const int FPS = 30;
 const double SCREEN_TICKS_PER_FRAME = 1000.0 / FPS;
 
 const int numFrame = 7;
 
-const int SPEED_X = 5;
+const int SPEED_X = 10;
 const int GRAVITY = 10;
 
 #define TILE_SIZE  96

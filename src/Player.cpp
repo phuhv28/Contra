@@ -54,13 +54,13 @@ void Player::show(SDL_Renderer *renderer, const SDL_Rect *camera)
     if (input == Input::LEFT || input == Input::RIGHT)
     {
         curFrame++;
-        if (curFrame >= 50)
+        if (curFrame >= 5 * 4)
             curFrame = 0;
     }
     else
-        curFrame = 60;
+        curFrame = 6 * 4;
 
-    SDL_Rect *curClip = &frameClip[curFrame/10];
+    SDL_Rect *curClip = &frameClip[curFrame / 4];
 
     if (x < camera->x)
         x = camera->x;
@@ -98,6 +98,9 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
             input = Input::LEFT;
             VelX -= SPEED_X;
             break;
+        case SDLK_x:
+            direction = Direction::UP;
+            VelY = - 17;
         }
     }
     else if (e.type == SDL_KEYUP && e.key.repeat == 0)
@@ -116,8 +119,10 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
             break;
         }
 
-        if (VelX > 0) direction = Direction::RIGHT;
-        if (VelX < 0) direction = Direction::LEFT;
+        if (VelX > 0)
+            direction = Direction::RIGHT;
+        if (VelX < 0)
+            direction = Direction::LEFT;
     }
 }
 
@@ -141,6 +146,9 @@ void Player::action(Map map)
     x += VelX;
     y += VelY;
     // std::cout << y << "\n";
+
+    if (direction == Direction::UP)
+        VelY += 1;
 
     if (x < 0 || x > MAX_MAP_X * TILE_SIZE)
         x = 0;

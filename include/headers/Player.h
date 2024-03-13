@@ -15,7 +15,8 @@ enum class Input
 enum class Direction
 {
     LEFT,
-    RIGHT
+    RIGHT,
+    UP
 };
 
 class Player : public Object
