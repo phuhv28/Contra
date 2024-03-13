@@ -7,7 +7,7 @@ Player::Player()
     curFrame = 0;
     VelX = 0;
     VelY = GRAVITY;
-    direction = Direction::RIGHT;
+    direction. right = true;
 }
 
 Player::~Player()
@@ -42,11 +42,11 @@ bool Player::loadIMG(std::string path, SDL_Renderer *renderer)
 
 void Player::show(SDL_Renderer *renderer, const SDL_Rect *camera)
 {
-    if (direction == Direction::LEFT)
+    if (direction.left == true)
     {
         loadIMG("res/left.png", renderer);
     }
-    else if (direction == Direction::RIGHT)
+    else if (direction.right == true)
     {
         loadIMG("res/right.png", renderer);
     }
@@ -89,17 +89,17 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
         switch (e.key.keysym.sym)
         {
         case SDLK_RIGHT:
-            direction = Direction::RIGHT;
+            direction.right = true;
             input = Input::RIGHT;
             VelX += SPEED_X;
             break;
         case SDLK_LEFT:
-            direction = Direction::LEFT;
+            direction.left = true;
             input = Input::LEFT;
             VelX -= SPEED_X;
             break;
         case SDLK_x:
-            direction = Direction::UP;
+            direction.up = true;
             VelY = - 17;
         }
     }
@@ -109,20 +109,22 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
         {
         case SDLK_RIGHT:
             VelX -= SPEED_X;
+            direction.right = false;
             if (VelX == 0)
                 input = Input::NO_INPUT;
             break;
         case SDLK_LEFT:
             VelX += SPEED_X;
+            direction.left = false;
             if (VelX == 0)
                 input = Input::NO_INPUT;
             break;
         }
 
         if (VelX > 0)
-            direction = Direction::RIGHT;
+            direction.right = true;
         if (VelX < 0)
-            direction = Direction::LEFT;
+            direction.left = true;
     }
 }
 
@@ -147,8 +149,11 @@ void Player::action(Map map)
     y += VelY;
     // std::cout << y << "\n";
 
-    if (direction == Direction::UP)
+    if (direction.up == true)
+    {
         VelY += 1;
+
+    }
 
     if (x < 0 || x > MAX_MAP_X * TILE_SIZE)
         x = 0;

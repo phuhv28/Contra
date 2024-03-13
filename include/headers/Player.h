@@ -12,11 +12,10 @@ enum class Input
     RIGHT
 };
 
-enum class Direction
+struct Direction
 {
-    LEFT,
-    RIGHT,
-    UP
+    bool left, right, up;
+    Direction() : left(false), right(false), up(false) {};
 };
 
 class Player : public Object
