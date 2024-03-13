@@ -139,13 +139,13 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
 
 void Player::action(Map map)
 {
-    std::cout << curFrame << " ";
+    // std::cout << curFrame << " ";
 
     if (map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX) / TILE_SIZE] == 1 ||
         map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX + frameClip[curFrame].w) / TILE_SIZE] == 1)
     {
         // std::cout << "a: " << (y + VelY) / TILE_SIZE + 1 << " " << (x + VelX) / TILE_SIZE << " " << (x + VelX + frameClip[curFrame].w) / TILE_SIZE << std::endl;
-        std::cout << "a: " << (frameClip[curFrame].w) << std::endl;
+        // std::cout << "a: " << (frameClip[curFrame].w) << std::endl;
         VelY = 0;
 
     }
@@ -154,14 +154,17 @@ void Player::action(Map map)
         (map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX) / TILE_SIZE] != 1 && map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX + frameClip[curFrame].w) / TILE_SIZE] != 1))
     {
         // std::cout << "b: " << (y + VelY) / TILE_SIZE + 1 << " " << (x + VelX) / TILE_SIZE << " " << (x + VelX + frameClip[curFrame].w) / TILE_SIZE << std::endl;
-        std::cout << "b: " << (frameClip[curFrame].w) << std::endl;
+        // std::cout << "b: " << (frameClip[curFrame].w) << std::endl;
 
         VelY = GRAVITY;
         // std::cout << y << " ";
     }
 
     if (VelY == 0)
+    {
         onGround = true;
+        direction.up = false;
+    }
     else
         onGround = false;
 
