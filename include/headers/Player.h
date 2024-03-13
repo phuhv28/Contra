@@ -41,6 +41,7 @@ private:
     Input input;
     int curFrame;
     Direction direction;
+    bool onGround;
 
 };
 

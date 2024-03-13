@@ -7,7 +7,8 @@ Player::Player()
     curFrame = 0;
     VelX = 0;
     VelY = GRAVITY;
-    direction. right = true;
+    direction.right = true;
+    onGround = false;
 }
 
 Player::~Player()
@@ -59,8 +60,12 @@ void Player::show(SDL_Renderer *renderer, const SDL_Rect *camera)
     }
     else
         curFrame = 6 * 4;
+    
+    curFrame /= 4;
 
-    SDL_Rect *curClip = &frameClip[curFrame / 4];
+    SDL_Rect *curClip = &frameClip[curFrame];
+
+
 
     if (x < camera->x)
         x = camera->x;
@@ -99,8 +104,11 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
             VelX -= SPEED_X;
             break;
         case SDLK_x:
-            direction.up = true;
-            VelY = - 17;
+            if (onGround == true)
+            {
+                direction.up = true;
+                VelY = -17;
+            }
         }
     }
     else if (e.type == SDL_KEYUP && e.key.repeat == 0)
@@ -130,20 +138,31 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
 
 void Player::action(Map map)
 {
+    std::cout << curFrame << " ";
+
     if (map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX) / TILE_SIZE] == 1 ||
         map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX + frameClip[curFrame].w) / TILE_SIZE] == 1)
     {
+        // std::cout << "a: " << (y + VelY) / TILE_SIZE + 1 << " " << (x + VelX) / TILE_SIZE << " " << (x + VelX + frameClip[curFrame].w) / TILE_SIZE << std::endl;
+        std::cout << "a: " << (frameClip[curFrame].w) << std::endl;
         VelY = 0;
-        y += VelY;
-        // std::cout << y << " ";
+
     }
 
     if (VelY == 0 &&
         (map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX) / TILE_SIZE] != 1 && map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX + frameClip[curFrame].w) / TILE_SIZE] != 1))
     {
+        // std::cout << "b: " << (y + VelY) / TILE_SIZE + 1 << " " << (x + VelX) / TILE_SIZE << " " << (x + VelX + frameClip[curFrame].w) / TILE_SIZE << std::endl;
+        std::cout << "b: " << (frameClip[curFrame].w) << std::endl;
+
         VelY = GRAVITY;
         // std::cout << y << " ";
     }
+
+    if (VelY == 0)
+        onGround = true;
+    else
+        onGround = false;
 
     x += VelX;
     y += VelY;
@@ -152,7 +171,6 @@ void Player::action(Map map)
     if (direction.up == true)
     {
         VelY += 1;
-
     }
 
     if (x < 0 || x > MAX_MAP_X * TILE_SIZE)
