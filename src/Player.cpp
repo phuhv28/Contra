@@ -176,8 +176,9 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
 
 void Player::action(Map map)
 {
-    if (map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX) / TILE_SIZE] == 1 ||
-        map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX + frameClip[curFrame].w) / TILE_SIZE] == 1)
+    if ((map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX) / TILE_SIZE] == 1 ||
+        map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX + frameClip[curFrame].w) / TILE_SIZE]) == 1 &&
+        VelY > 0)
     {
         VelY = 0;
     }

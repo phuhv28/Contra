@@ -17,7 +17,8 @@ const double SCREEN_TICKS_PER_FRAME = 1000.0 / FPS;
 
 const int numFrame = 7;
 
-const int SPEED_X = 10;
+// const int SPEED_X = 10;
+const int SPEED_X = 30;
 const int GRAVITY = 10;
 
 #define TILE_SIZE  96
