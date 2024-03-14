@@ -61,7 +61,6 @@ void Player::show(SDL_Renderer *renderer, const SDL_Rect *camera)
     }
     else
     {
-        // std::cout << direction.left << " " << direction.right << std::endl;
         if (direction.left == true)
         {
             loadIMG("res/left.png", renderer);
@@ -176,13 +175,17 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
 
 void Player::action(Map map)
 {
+    // Check horizontal collision only when VelY > 0 
     if ((map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX) / TILE_SIZE] == 1 ||
         map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX + frameClip[curFrame].w) / TILE_SIZE]) == 1 &&
         VelY > 0)
     {
+        y = (y + VelY) / TILE_SIZE * TILE_SIZE + 5;
+        std::cout << y << " \n";
         VelY = 0;
     }
 
+    //Fall when go out of block 1
     if (VelY == 0 &&
         (map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX) / TILE_SIZE] != 1 && map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX + frameClip[curFrame].w) / TILE_SIZE] != 1))
     {
