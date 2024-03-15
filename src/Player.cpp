@@ -41,13 +41,13 @@ bool Player::loadIMG(std::string path, SDL_Renderer *renderer)
             frameClip[i].x = i * 60;
             frameClip[i].y = 0;
             frameClip[i].w = 60;
-            frameClip[i].h = 105;
+            frameClip[i].h = PLAYER_HEIGHT;
         }
 
         frameClip[6].x = 6 * 60;
         frameClip[6].y = 0;
         frameClip[6].w = 69;
-        frameClip[6].h = 105;
+        frameClip[6].h = PLAYER_HEIGHT;
     }
 
     return flag;
@@ -74,13 +74,13 @@ void Player::show(SDL_Renderer *renderer, const SDL_Rect *camera)
     if ((int)inputQueue.size() != 0 || onGround == false)
     {
         aCurFrame++;
-        if (aCurFrame >= 5 * 4)
+        if (aCurFrame >= (numFrame - 2) * SLOWMOTION_ANIMATION_RATE)
             aCurFrame = 0;
     }
     else
-        aCurFrame = 6 * 4;
+        aCurFrame = (numFrame - 1) * SLOWMOTION_ANIMATION_RATE;
 
-    curFrame = aCurFrame / 4;
+    curFrame = aCurFrame / SLOWMOTION_ANIMATION_RATE;
 
     SDL_Rect *curClip = &frameClip[curFrame];
 
@@ -175,27 +175,29 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
 
 void Player::action(Map map)
 {
-    // Check horizontal collision only when VelY > 0 
-    if ((map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX) / TILE_SIZE] == 1 ||
-        map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX + frameClip[curFrame].w) / TILE_SIZE]) == 1 &&
-        VelY > 0)
+    int x1 = x + VelX;
+    int x2 = x1 + frameClip[curFrame].w;
+    int y1 = y + VelY;
+    int y2 = y1 + PLAYER_HEIGHT + 15;
+
+
+    // Check horizontal collision only when VelY > 0
+    if ((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 1 ||
+         map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 1) &&
+        VelY > 0 && (y + PLAYER_HEIGHT + 15) < (y2 / TILE_SIZE * TILE_SIZE))
     {
-        y = (y + VelY) / TILE_SIZE * TILE_SIZE + 5;
-        std::cout << y << " \n";
+        y = y2 / TILE_SIZE * TILE_SIZE - PLAYER_HEIGHT + 15;
         VelY = 0;
-    }
-
-    //Fall when go out of block 1
-    if (VelY == 0 &&
-        (map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX) / TILE_SIZE] != 1 && map.tile[(y + VelY) / TILE_SIZE + 1][(x + VelX + frameClip[curFrame].w) / TILE_SIZE] != 1))
-    {
-        VelY = GRAVITY;
-    }
-
-    if (VelY == 0 && onGround == false)
-    {
         onGround = true;
         direction.up = false;
+    }
+
+    // Fall when go out of block 1
+    if (VelY == 0 && onGround == true &&
+        (map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] != 1 && map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] != 1))
+    {
+        VelY = GRAVITY;
+        std::cout << 1 << " ";
     }
 
     x += VelX;
