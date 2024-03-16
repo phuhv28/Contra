@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player()
+Player::Player(const SDL_Rect *camera)
 {
     x = 100;
     y = 0;
@@ -10,6 +10,7 @@ Player::Player()
     direction.right = true;
     onGround = false;
     aCurFrame = 0;
+    this->camera = camera;
 }
 
 Player::~Player()
@@ -53,7 +54,7 @@ bool Player::loadIMG(std::string path, SDL_Renderer *renderer)
     return flag;
 }
 
-void Player::show(SDL_Renderer *renderer, const SDL_Rect *camera)
+void Player::show(SDL_Renderer *renderer)
 {
     if (onGround == false)
     {
@@ -123,6 +124,10 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
                 VelY = -17;
                 onGround = false;
             }
+            break;
+        case SDLK_z:
+            createBullet(renderer);
+            break;
         }
     }
     else if (e.type == SDL_KEYUP && e.key.repeat == 0)
@@ -180,7 +185,6 @@ void Player::action(Map map)
     int y1 = y + VelY;
     int y2 = y1 + PLAYER_HEIGHT + 15;
 
-
     // Check horizontal collision only when VelY > 0
     if ((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 1 ||
          map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 1) &&
@@ -197,7 +201,6 @@ void Player::action(Map map)
         (map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] != 1 && map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] != 1))
     {
         VelY = GRAVITY;
-        std::cout << 1 << " ";
     }
 
     x += VelX;
@@ -212,4 +215,37 @@ void Player::action(Map map)
         x = 0;
     if (y < 0 || y > MAX_MAP_Y * TILE_SIZE)
         y = 0;
+}
+
+void Player::createBullet(SDL_Renderer *renderer)
+{
+    Bullet *newBullet = new Bullet();
+    newBullet->loadIMG("res/bullet1.png", renderer);
+    newBullet->setPos(x, y + 14);
+    if (direction.left == true)
+        newBullet->setVelX(-BULLET_SPEED);
+    if (direction.right == true)
+        newBullet->setVelX(BULLET_SPEED);
+    newBullet->setOnScreen();
+
+    bullet.push_back(newBullet);
+}
+
+void Player::handleBullet(SDL_Renderer *renderer)
+{
+    for (int i = 0; i < bullet.size(); i++)
+    {
+        if (bullet[i] != NULL)
+        {
+            if (bullet[i]->getOnScreen() == true)
+            {
+                bullet[i]->move(camera);
+                bullet[i]->renderBullet(renderer, camera);
+            } else
+            {
+                delete bullet[i];
+                bullet.erase(bullet.begin() + i);
+            }
+        }
+    }
 }

@@ -6,9 +6,9 @@
 SDL_Window *window;
 SDL_Renderer *renderer;
 Object backGround;
-Player player;
-GameMap map;
 SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+Player player(&camera);
+GameMap map;
 
 bool init();
 void setCamera();
@@ -155,7 +155,8 @@ void renderGamePlay()
 
     setCamera();
     backGround.render(renderer, &camera);
-    player.show(renderer, &camera);
+    player.handleBullet(renderer);
+    player.show(renderer);
 
     SDL_RenderPresent(renderer);
 }

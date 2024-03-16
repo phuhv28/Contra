@@ -16,6 +16,7 @@ const int FPS = 30;
 const double SCREEN_TICKS_PER_FRAME = 1000.0 / FPS;
 const int SLOWMOTION_ANIMATION_RATE = 4;
 const int PLAYER_HEIGHT = 105;
+const int BULLET_SPEED = 20;
 
 const int numFrame = 7;
 

@@ -3,6 +3,7 @@
 
 #include "Constants.h"
 #include "Object.h"
+#include "Bullet.h"
 
 
 enum class Input
@@ -22,19 +23,25 @@ struct Direction
 class Player : public Object
 {
 public:
-    Player();
+    Player(const SDL_Rect *camera);
     ~Player();
 
     bool loadIMG(std::string path, SDL_Renderer *renderer);
-    void show(SDL_Renderer *renderer, const SDL_Rect *camera);
+    void show(SDL_Renderer *renderer);
     void handleInput(SDL_Event e, SDL_Renderer *renderer);
     void action(Map map);
     int getX() { return x; }
     int getY() { return y; }
     int getFrameW() { return frameW;}
     int getFrameH() { return frameH;}
+    void setBullet(std::vector<Bullet*> bulletList) { bullet = bulletList; }
+    std::vector<Bullet*> getBullet() const { return bullet; }
+    void createBullet(SDL_Renderer *renderer);
+    void handleBullet(SDL_Renderer *renderer);
 
 private:
+    const SDL_Rect *camera;
+    
     int VelX, VelY;
     int x, y;
     int frameW, frameH;
@@ -44,7 +51,7 @@ private:
     bool onGround;
     int aCurFrame;
     std::vector<Input> inputQueue;
-
+    std::vector<Bullet*> bullet;
 };
 
 #endif
