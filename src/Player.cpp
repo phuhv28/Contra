@@ -11,6 +11,7 @@ Player::Player(const SDL_Rect *camera)
     onGround = false;
     aCurFrame = 0;
     this->camera = camera;
+    numFrame = 0;
 }
 
 Player::~Player()
@@ -27,13 +28,20 @@ bool Player::loadIMG(std::string path, SDL_Renderer *renderer)
 
     if (path == "res/jump.png")
     {
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < numFrame; i++)
         {
             frameClip[i].x = i * 60;
             frameClip[i].y = 0;
             frameClip[i].w = 60;
             frameClip[i].h = 60;
         }
+    }
+    else if (path == "res/laydownL.png" || path == "res/laydownR.png")
+    {
+        frameClip[0].x = 0;
+        frameClip[0].y = 0;
+        frameClip[0].w = 96;
+        frameClip[0].h = 48;
     }
     else
     {
@@ -59,16 +67,29 @@ void Player::show(SDL_Renderer *renderer)
     if (onGround == false)
     {
         loadIMG("res/jump.png", renderer);
+        numFrame = 6;
     }
     else
     {
-        if (direction.left == true)
+        if (direction.left == true && direction.down == true)
         {
-            loadIMG("res/left.png", renderer);
+            loadIMG("res/laydownL.png", renderer);
+            numFrame = 1;
+        }
+        else if (direction.right == true && direction.down == true)
+        {
+            loadIMG("res/laydownR.png", renderer);
+            numFrame = 1;
         }
         else if (direction.right == true)
         {
             loadIMG("res/right.png", renderer);
+            numFrame = 7;
+        }
+        else if (direction.left == true)
+        {
+            loadIMG("res/left.png", renderer);
+            numFrame = 7;
         }
     }
 
@@ -123,10 +144,18 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
                 direction.up = true;
                 VelY = -17;
                 onGround = false;
+                direction.down = false;
             }
             break;
         case SDLK_z:
             createBullet(renderer);
+            break;
+        case SDLK_DOWN:
+            if (onGround == true)
+            {
+                direction.down = true;
+                y += 57;
+            }
             break;
         }
     }
@@ -146,6 +175,13 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
             {
                 if (inputQueue[i] == Input::LEFT)
                     inputQueue.erase(inputQueue.begin() + i);
+            }
+            break;
+        case SDLK_DOWN:
+            if (direction.down == true)
+            {
+                direction.down = false;
+                y -= 57;
             }
             break;
         }
@@ -180,6 +216,10 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
 
 void Player::action(Map map)
 {
+    // Can't move when lay down
+    if (direction.down == true)
+        VelX = 0;
+
     int x1 = x + VelX;
     int x2 = x1 + frameClip[curFrame].w;
     int y1 = y + VelY;
@@ -220,7 +260,7 @@ void Player::action(Map map)
 void Player::createBullet(SDL_Renderer *renderer)
 {
     Bullet *newBullet = new Bullet();
-    newBullet->loadIMG("res/bullet1.png", renderer);
+    newBullet->loadIMG("res/bullet.png", renderer);
     newBullet->setPos(x, y + 14);
     if (direction.left == true)
         newBullet->setVelX(-BULLET_SPEED);
@@ -241,7 +281,8 @@ void Player::handleBullet(SDL_Renderer *renderer)
             {
                 bullet[i]->move(camera);
                 bullet[i]->renderBullet(renderer, camera);
-            } else
+            }
+            else
             {
                 delete bullet[i];
                 bullet.erase(bullet.begin() + i);

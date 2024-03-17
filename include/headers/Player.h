@@ -16,8 +16,8 @@ enum class Input
 
 struct Direction
 {
-    bool left, right, up;
-    Direction() : left(false), right(false), up(false) {};
+    bool left, right, up, down;
+    Direction() : left(false), right(false), up(false), down(false) {};
 };
 
 class Player : public Object
@@ -44,8 +44,9 @@ private:
     
     int VelX, VelY;
     int x, y;
+    int numFrame;
     int frameW, frameH;
-    SDL_Rect frameClip[numFrame];
+    SDL_Rect frameClip[MAX_NUM_FRAME];
     int curFrame;
     Direction direction;
     bool onGround;
