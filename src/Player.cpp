@@ -11,8 +11,8 @@ Player::Player(const SDL_Rect *camera)
     onGround = false;
     aCurFrame = 0;
     this->camera = camera;
-    numFrame = 0;
     isFalling = false;
+    numFrame = 1;
 }
 
 Player::~Player()
@@ -26,38 +26,16 @@ bool Player::loadIMG(std::string path, SDL_Renderer *renderer)
     bool flag = Object::loadIMG(path, renderer);
     if (!flag)
         std::cout << "Error!";
+    
+    frameW = rect.w / numFrame;
+    frameH = rect.h;
 
-    if (path == "res/jump.png")
+    for (int i = 0; i < numFrame; i++)
     {
-        for (int i = 0; i < numFrame; i++)
-        {
-            frameClip[i].x = i * 60;
-            frameClip[i].y = 0;
-            frameClip[i].w = 60;
-            frameClip[i].h = 60;
-        }
-    }
-    else if (path == "res/laydownL.png" || path == "res/laydownR.png")
-    {
-        frameClip[0].x = 0;
-        frameClip[0].y = 0;
-        frameClip[0].w = 96;
-        frameClip[0].h = 48;
-    }
-    else
-    {
-        for (int i = 0; i < 6; i++)
-        {
-            frameClip[i].x = i * 60;
-            frameClip[i].y = 0;
-            frameClip[i].w = 60;
-            frameClip[i].h = PLAYER_HEIGHT;
-        }
-
-        frameClip[6].x = 6 * 60;
-        frameClip[6].y = 0;
-        frameClip[6].w = 69;
-        frameClip[6].h = PLAYER_HEIGHT;
+        frameClip[i].x = i * frameW;
+        frameClip[i].y = 0;
+        frameClip[i].w = frameW;
+        frameClip[i].h = frameH;
     }
 
     return flag;
@@ -67,30 +45,38 @@ void Player::show(SDL_Renderer *renderer)
 {
     if (onGround == false)
     {
-        loadIMG("res/jump.png", renderer);
         numFrame = 6;
+        loadIMG("res/jump.png", renderer);
     }
     else
     {
         if (direction.left == true && direction.down == true)
         {
-            loadIMG("res/laydownL.png", renderer);
             numFrame = 1;
+            loadIMG("res/laydownL.png", renderer);
         }
         else if (direction.right == true && direction.down == true)
         {
-            loadIMG("res/laydownR.png", renderer);
             numFrame = 1;
+            loadIMG("res/laydownR.png", renderer);
         }
-        else if (direction.right == true)
+        else if (direction.right == true && VelX > 0)
         {
-            loadIMG("res/right.png", renderer);
-            numFrame = 7;
+            numFrame = 6;
+            loadIMG("res/walking_right.png", renderer);
         }
-        else if (direction.left == true)
+        else if (direction.left == true && VelX < 0)
         {
-            loadIMG("res/left.png", renderer);
-            numFrame = 7;
+            numFrame = 6;
+            loadIMG("res/walking_left.png", renderer);
+        } else if (direction.left == true)
+        {
+            numFrame = 1;
+            loadIMG("res/standing_left.png", renderer);
+        } else if (direction.right == true)
+        {
+            numFrame = 1;
+            loadIMG("res/standing_right.png", renderer);
         }
     }
 
@@ -302,6 +288,7 @@ void Player::handleBullet(SDL_Renderer *renderer)
             }
             else
             {
+                bullet[i]->free();
                 delete bullet[i];
                 bullet.erase(bullet.begin() + i);
             }

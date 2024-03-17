@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
             map.loadMap("map/map.txt");
 
-            player.loadIMG("res/right.png", renderer);
+            player.loadIMG("res/standing_right.png", renderer);
 
             SDL_Event e;
 

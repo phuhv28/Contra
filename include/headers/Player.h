@@ -41,12 +41,11 @@ public:
 
 private:
     const SDL_Rect *camera;
-    
     int VelX, VelY;
     int x, y;
     bool isFalling;
-    int numFrame;
     int frameW, frameH;
+    int numFrame;
     SDL_Rect frameClip[MAX_NUM_FRAME];
     int curFrame;
     Direction direction;
@@ -54,6 +53,7 @@ private:
     int aCurFrame;
     std::vector<Input> inputQueue;
     std::vector<Bullet*> bullet;
+
 };
 
 #endif
