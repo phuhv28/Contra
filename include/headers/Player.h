@@ -44,6 +44,7 @@ private:
     
     int VelX, VelY;
     int x, y;
+    bool isFalling;
     int numFrame;
     int frameW, frameH;
     SDL_Rect frameClip[MAX_NUM_FRAME];

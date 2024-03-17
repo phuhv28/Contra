@@ -12,6 +12,7 @@ Player::Player(const SDL_Rect *camera)
     aCurFrame = 0;
     this->camera = camera;
     numFrame = 0;
+    isFalling = false;
 }
 
 Player::~Player()
@@ -141,10 +142,18 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
         case SDLK_x:
             if (onGround == true)
             {
-                direction.up = true;
-                VelY = -17;
-                onGround = false;
-                direction.down = false;
+                if (direction.down == false)
+                {
+                    direction.up = true;
+                    VelY = -17;
+                    onGround = false;
+                    direction.down = false;
+                }
+                else
+                {
+                    isFalling = true;
+                    VelY = GRAVITY;
+                }
             }
             break;
         case SDLK_z:
@@ -220,6 +229,9 @@ void Player::action(Map map)
     if (direction.down == true)
         VelX = 0;
 
+    if (isFalling == true)
+        y -= 57;
+
     int x1 = x + VelX;
     int x2 = x1 + frameClip[curFrame].w;
     int y1 = y + VelY;
@@ -228,12 +240,18 @@ void Player::action(Map map)
     // Check horizontal collision only when VelY > 0
     if ((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 1 ||
          map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 1) &&
-        VelY > 0 && (y + PLAYER_HEIGHT + 15) < (y2 / TILE_SIZE * TILE_SIZE))
+        VelY > 0 && (y + PLAYER_HEIGHT + 15) < (y2 / TILE_SIZE * TILE_SIZE) && isFalling == false)
     {
         y = y2 / TILE_SIZE * TILE_SIZE - PLAYER_HEIGHT + 15;
         VelY = 0;
         onGround = true;
         direction.up = false;
+    }
+
+    if (isFalling == true)
+    {
+        isFalling = false;
+        direction.down = false;
     }
 
     // Fall when go out of block 1
