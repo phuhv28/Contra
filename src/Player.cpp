@@ -56,8 +56,29 @@ void Player::show(SDL_Renderer *renderer)
         {
             if (direction.down == true)
             {
-                numFrame = 1;
-                loadIMG("res/laydownL.png", renderer);
+                if (VelX == 0)
+                {
+                    numFrame = 1;
+                    loadIMG("res/laydownL.png", renderer);
+                }
+                else
+                {
+                    numFrame = 3;
+                    loadIMG("res/down_left.png", renderer);
+                }
+            }
+            else if (direction.up == true)
+            {
+                if (VelX == 0)
+                {
+                    numFrame = 1;
+                    loadIMG("res/upL.png", renderer);
+                }
+                else
+                {
+                    numFrame = 3;
+                    loadIMG("res/up_left_and_walking.png", renderer);
+                }
             }
             else if (VelX < 0)
             {
@@ -82,8 +103,29 @@ void Player::show(SDL_Renderer *renderer)
         {
             if (direction.down == true)
             {
-                numFrame = 1;
-                loadIMG("res/laydownR.png", renderer);
+                if (VelX == 0)
+                {
+                    numFrame = 1;
+                    loadIMG("res/laydownR.png", renderer);
+                }
+                else
+                {
+                    numFrame = 3;
+                    loadIMG("res/down_right.png", renderer);
+                }
+            }
+            else if (direction.up == true)
+            {
+                if (VelX == 0)
+                {
+                    numFrame = 1;
+                    loadIMG("res/upR.png", renderer);
+                }
+                else
+                {
+                    numFrame = 3;
+                    loadIMG("res/up_right_and_walking.png", renderer);
+                }
             }
             else if (VelX > 0)
             {
@@ -115,10 +157,8 @@ void Player::show(SDL_Renderer *renderer)
     {
         aCurFrame = (numFrame - 1) * SLOWMOTION_ANIMATION_RATE;
     }
-    std::cout << "aCurFrame: " << aCurFrame << " \n";
 
     curFrame = aCurFrame / SLOWMOTION_ANIMATION_RATE;
-    std::cout << "curFrame: " << curFrame << " \n";
 
     SDL_Rect *curClip = &frameClip[curFrame];
 
@@ -151,12 +191,18 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
         case SDLK_LEFT:
             inputQueue.push_back(Input::LEFT);
             break;
+        case SDLK_UP:
+            direction.up = true;
+            break;
+        case SDLK_DOWN:
+            if (status.onGround == true)
+                direction.down = true;
+            break;
         case SDLK_x:
             if (status.onGround == true)
             {
                 if (direction.down == false)
                 {
-                    direction.up = true;
                     VelY = -17;
                     status.onGround = false;
                     direction.down = false;
@@ -171,13 +217,6 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
         case SDLK_z:
             createBullet(renderer);
             status.isFiring = true;
-            break;
-        case SDLK_DOWN:
-            if (status.onGround == true)
-            {
-                direction.down = true;
-                y += 57;
-            }
             break;
         }
     }
@@ -201,10 +240,11 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
             break;
         case SDLK_DOWN:
             if (direction.down == true)
-            {
                 direction.down = false;
-                y -= 57;
-            }
+            break;
+        case SDLK_UP:
+            if (direction.up == true)
+                direction.up = false;
             break;
         }
     }
@@ -238,27 +278,25 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
 
 void Player::action(Map map)
 {
-    // Can't move when lay down
-    if (direction.down == true)
-        VelX = 0;
-
-    if (status.isFalling == true)
-        y -= 57;
+    // std::cout << h << std::endl;
 
     int x1 = x + VelX;
     int x2 = x1 + frameClip[curFrame].w;
     int y1 = y + VelY;
     int y2 = y1 + PLAYER_HEIGHT + 15;
+    // std::cout << "x: " << x << " y: " << y << std::endl;
+    // std::cout << "x1: " << x1 << " y1: " << y1 << std::endl;
+    // std::cout << "x2: " << x2 << " y2: " << y2 << std::endl;
 
     // Check horizontal collision only when VelY > 0
     if ((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 1 ||
          map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 1) &&
         VelY > 0 && (y + PLAYER_HEIGHT + 15) < (y2 / TILE_SIZE * TILE_SIZE) && status.isFalling == false)
     {
+        std::cout << 1 << std::endl;
         y = y2 / TILE_SIZE * TILE_SIZE - PLAYER_HEIGHT + 15;
         VelY = 0;
         status.onGround = true;
-        direction.up = false;
     }
 
     if (status.isFalling == true)
@@ -277,7 +315,7 @@ void Player::action(Map map)
     x += VelX;
     y += VelY;
 
-    if (direction.up == true)
+    if (status.onGround == false)
     {
         VelY += 1;
     }
