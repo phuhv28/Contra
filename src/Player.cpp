@@ -47,7 +47,7 @@ void Player::show(SDL_Renderer *renderer)
 
     if (status.onGround == false)
     {
-        numFrame = 4;
+        numFrame = 3;
         loadIMG("res/jump.png", renderer);
     }
     else
@@ -69,13 +69,13 @@ void Player::show(SDL_Renderer *renderer)
                 else
                 {
                     numFrame = 3;
-                    loadIMG("res/walking_left.png", renderer);
+                    loadIMG("res/walkingL.png", renderer);
                 }
             }
             else
             {
                 numFrame = 1;
-                loadIMG("res/standing_left.png", renderer);
+                loadIMG("res/standingL.png", renderer);
             }
         }
         else if (direction.right == true)
@@ -95,13 +95,13 @@ void Player::show(SDL_Renderer *renderer)
                 else
                 {
                     numFrame = 3;
-                    loadIMG("res/walking_right.png", renderer);
+                    loadIMG("res/walkingR.png", renderer);
                 }
             }
             else
             {
                 numFrame = 1;
-                loadIMG("res/standing_right.png", renderer);
+                loadIMG("res/standingR.png", renderer);
             }
         }
     }
