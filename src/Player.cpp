@@ -8,11 +8,12 @@ Player::Player(const SDL_Rect *camera)
     VelX = 0;
     VelY = GRAVITY;
     direction.right = true;
-    onGround = false;
+    status.onGround = false;
     aCurFrame = 0;
     this->camera = camera;
-    isFalling = false;
+    status.isFalling = false;
     numFrame = 1;
+    status.isFiring = false;
 }
 
 Player::~Player()
@@ -26,7 +27,7 @@ bool Player::loadIMG(std::string path, SDL_Renderer *renderer)
     bool flag = Object::loadIMG(path, renderer);
     if (!flag)
         std::cout << "Error!";
-    
+
     frameW = rect.w / numFrame;
     frameH = rect.h;
 
@@ -43,53 +44,81 @@ bool Player::loadIMG(std::string path, SDL_Renderer *renderer)
 
 void Player::show(SDL_Renderer *renderer)
 {
-    if (onGround == false)
+
+    if (status.onGround == false)
     {
-        numFrame = 6;
+        numFrame = 4;
         loadIMG("res/jump.png", renderer);
     }
     else
     {
-        if (direction.left == true && direction.down == true)
+        if (direction.left == true)
         {
-            numFrame = 1;
-            loadIMG("res/laydownL.png", renderer);
+            if (direction.down == true)
+            {
+                numFrame = 1;
+                loadIMG("res/laydownL.png", renderer);
+            }
+            else if (VelX < 0)
+            {
+                if (status.isFiring == true)
+                {
+                    numFrame = 3;
+                    loadIMG("res/firing_while_walkingL.png", renderer);
+                }
+                else
+                {
+                    numFrame = 3;
+                    loadIMG("res/walking_left.png", renderer);
+                }
+            }
+            else
+            {
+                numFrame = 1;
+                loadIMG("res/standing_left.png", renderer);
+            }
         }
-        else if (direction.right == true && direction.down == true)
+        else if (direction.right == true)
         {
-            numFrame = 1;
-            loadIMG("res/laydownR.png", renderer);
-        }
-        else if (direction.right == true && VelX > 0)
-        {
-            numFrame = 6;
-            loadIMG("res/walking_right.png", renderer);
-        }
-        else if (direction.left == true && VelX < 0)
-        {
-            numFrame = 6;
-            loadIMG("res/walking_left.png", renderer);
-        } else if (direction.left == true)
-        {
-            numFrame = 1;
-            loadIMG("res/standing_left.png", renderer);
-        } else if (direction.right == true)
-        {
-            numFrame = 1;
-            loadIMG("res/standing_right.png", renderer);
+            if (direction.down == true)
+            {
+                numFrame = 1;
+                loadIMG("res/laydownR.png", renderer);
+            }
+            else if (VelX > 0)
+            {
+                if (status.isFiring == true)
+                {
+                    numFrame = 3;
+                    loadIMG("res/firing_while_walkingR.png", renderer);
+                }
+                else
+                {
+                    numFrame = 3;
+                    loadIMG("res/walking_right.png", renderer);
+                }
+            }
+            else
+            {
+                numFrame = 1;
+                loadIMG("res/standing_right.png", renderer);
+            }
         }
     }
-
-    if ((int)inputQueue.size() != 0 || onGround == false)
+    if ((int)inputQueue.size() != 0 || status.onGround == false)
     {
         aCurFrame++;
-        if (aCurFrame >= (numFrame - 2) * SLOWMOTION_ANIMATION_RATE)
+        if (aCurFrame >= numFrame * SLOWMOTION_ANIMATION_RATE)
             aCurFrame = 0;
     }
     else
+    {
         aCurFrame = (numFrame - 1) * SLOWMOTION_ANIMATION_RATE;
+    }
+    std::cout << "aCurFrame: " << aCurFrame << " \n";
 
     curFrame = aCurFrame / SLOWMOTION_ANIMATION_RATE;
+    std::cout << "curFrame: " << curFrame << " \n";
 
     SDL_Rect *curClip = &frameClip[curFrame];
 
@@ -104,9 +133,6 @@ void Player::show(SDL_Renderer *renderer)
 
     rect.x = x - camera->x;
     rect.y = y - camera->y;
-
-    frameH = curClip->h;
-    frameW = curClip->w;
 
     SDL_Rect renderQuad = {rect.x, rect.y, frameW, frameH};
 
@@ -126,27 +152,28 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
             inputQueue.push_back(Input::LEFT);
             break;
         case SDLK_x:
-            if (onGround == true)
+            if (status.onGround == true)
             {
                 if (direction.down == false)
                 {
                     direction.up = true;
                     VelY = -17;
-                    onGround = false;
+                    status.onGround = false;
                     direction.down = false;
                 }
                 else
                 {
-                    isFalling = true;
+                    status.isFalling = true;
                     VelY = GRAVITY;
                 }
             }
             break;
         case SDLK_z:
             createBullet(renderer);
+            status.isFiring = true;
             break;
         case SDLK_DOWN:
-            if (onGround == true)
+            if (status.onGround == true)
             {
                 direction.down = true;
                 y += 57;
@@ -215,7 +242,7 @@ void Player::action(Map map)
     if (direction.down == true)
         VelX = 0;
 
-    if (isFalling == true)
+    if (status.isFalling == true)
         y -= 57;
 
     int x1 = x + VelX;
@@ -226,22 +253,22 @@ void Player::action(Map map)
     // Check horizontal collision only when VelY > 0
     if ((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 1 ||
          map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 1) &&
-        VelY > 0 && (y + PLAYER_HEIGHT + 15) < (y2 / TILE_SIZE * TILE_SIZE) && isFalling == false)
+        VelY > 0 && (y + PLAYER_HEIGHT + 15) < (y2 / TILE_SIZE * TILE_SIZE) && status.isFalling == false)
     {
         y = y2 / TILE_SIZE * TILE_SIZE - PLAYER_HEIGHT + 15;
         VelY = 0;
-        onGround = true;
+        status.onGround = true;
         direction.up = false;
     }
 
-    if (isFalling == true)
+    if (status.isFalling == true)
     {
-        isFalling = false;
+        status.isFalling = false;
         direction.down = false;
     }
 
     // Fall when go out of block 1
-    if (VelY == 0 && onGround == true &&
+    if (VelY == 0 && status.onGround == true &&
         (map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] != 1 && map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] != 1))
     {
         VelY = GRAVITY;

@@ -20,6 +20,14 @@ struct Direction
     Direction() : left(false), right(false), up(false), down(false) {};
 };
 
+struct Status
+{
+    bool isFalling;
+    bool onGround;
+    bool isFiring;
+};
+
+
 class Player : public Object
 {
 public:
@@ -43,16 +51,15 @@ private:
     const SDL_Rect *camera;
     int VelX, VelY;
     int x, y;
-    bool isFalling;
     int frameW, frameH;
     int numFrame;
     SDL_Rect frameClip[MAX_NUM_FRAME];
     int curFrame;
     Direction direction;
-    bool onGround;
     int aCurFrame;
     std::vector<Input> inputQueue;
     std::vector<Bullet*> bullet;
+    Status status;
 
 };
 
