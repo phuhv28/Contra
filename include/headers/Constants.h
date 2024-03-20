@@ -8,6 +8,7 @@
 #include <fstream>
 #include <chrono>
 #include <vector>
+#include <algorithm>
 
 
 const int SCREEN_WIDTH = 768;

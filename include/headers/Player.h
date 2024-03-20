@@ -11,7 +11,28 @@ enum class Input
     NO_INPUT,
     LEFT,
     RIGHT,
-    JUMP
+    X,
+    Z,
+    DOWN,
+    UP
+};
+
+enum class Action
+{
+    AIM_DOWN_RIGHT_WHILE_WALKING,
+    AIM_DOWN_LEFT_WHILE_WALKING,
+    AIM_UP_LEFT_WHILE_WALKING,
+    AIM_UP_RIGHT_WHILE_WALKING,
+    WALKING_LEFT,
+    WALKING_RIGHT,
+    STANDING_LEFT,
+    STANDING_RIGHT,
+    JUMPING,
+    LAYING_DOWN_LEFT,
+    LAYING_DOWN_RIGHT,
+    AIM_UP_LEFT,
+    AIM_UP_RIGHT,
+
 };
 
 struct Direction
@@ -25,6 +46,7 @@ struct Status
     bool isFalling;
     bool onGround;
     bool isFiring;
+    Action action;
 };
 
 
@@ -60,7 +82,8 @@ private:
     std::vector<Input> inputQueue;
     std::vector<Bullet*> bullet;
     Status status;
-
+    bool lay;
+    int dx = 0;
 };
 
 #endif
