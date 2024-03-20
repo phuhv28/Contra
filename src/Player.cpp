@@ -15,7 +15,6 @@ Player::Player(const SDL_Rect *camera)
     numFrame = 1;
     status.isFiring = false;
     status.action = Action::JUMPING;
-    lay = false;
 }
 
 Player::~Player()
@@ -46,69 +45,69 @@ bool Player::loadIMG(std::string path, SDL_Renderer *renderer)
 
 void Player::show(SDL_Renderer *renderer)
 {
-    if (status.onGround == false)
+    // if (status.onGround == false)
+    // {
+    //     numFrame = 3;
+    //     loadIMG("res/jump.png", renderer);
+    // }
+    // else
+    // {
+    switch (status.action)
     {
+    case Action::JUMPING:
         numFrame = 3;
         loadIMG("res/jump.png", renderer);
+        break;
+    case Action::AIM_UP_RIGHT_WHILE_WALKING:
+        numFrame = 3;
+        loadIMG("res/up_right_and_walking.png", renderer);
+        break;
+    case Action::AIM_UP_LEFT_WHILE_WALKING:
+        numFrame = 3;
+        loadIMG("res/up_left_and_walking.png", renderer);
+        break;
+    case Action::AIM_DOWN_LEFT_WHILE_WALKING:
+        numFrame = 3;
+        loadIMG("res/down_left.png", renderer);
+        break;
+    case Action::AIM_DOWN_RIGHT_WHILE_WALKING:
+        numFrame = 3;
+        loadIMG("res/down_right.png", renderer);
+        break;
+    case Action::STANDING_LEFT:
+        numFrame = 1;
+        loadIMG("res/standingL.png", renderer);
+        break;
+    case Action::STANDING_RIGHT:
+        numFrame = 1;
+        loadIMG("res/standingR.png", renderer);
+        break;
+    case Action::WALKING_LEFT:
+        numFrame = 3;
+        loadIMG("res/walkingL.png", renderer);
+        break;
+    case Action::WALKING_RIGHT:
+        numFrame = 3;
+        loadIMG("res/walkingR.png", renderer);
+        break;
+    case Action::LAYING_DOWN_LEFT:
+        numFrame = 1;
+        loadIMG("res/laydownL.png", renderer);
+        break;
+    case Action::LAYING_DOWN_RIGHT:
+        numFrame = 1;
+        loadIMG("res/laydownR.png", renderer);
+        break;
+    case Action::AIM_UP_RIGHT:
+        numFrame = 1;
+        loadIMG("res/upR.png", renderer);
+        break;
+    case Action::AIM_UP_LEFT:
+        numFrame = 1;
+        loadIMG("res/upL.png", renderer);
+        break;
     }
-    else
-    {
-        switch (status.action)
-        {
-        // case Action::JUMPING:
-        //     numFrame = 3;
-        //     loadIMG("res/jump.png", renderer);
-        //     break;
-        case Action::AIM_UP_RIGHT_WHILE_WALKING:
-            numFrame = 3;
-            loadIMG("res/up_right_and_walking.png", renderer);
-            break;
-        case Action::AIM_UP_LEFT_WHILE_WALKING:
-            numFrame = 3;
-            loadIMG("res/up_left_and_walking.png", renderer);
-            break;
-        case Action::AIM_DOWN_LEFT_WHILE_WALKING:
-            numFrame = 3;
-            loadIMG("res/down_left.png", renderer);
-            break;
-        case Action::AIM_DOWN_RIGHT_WHILE_WALKING:
-            numFrame = 3;
-            loadIMG("res/down_right.png", renderer);
-            break;
-        case Action::STANDING_LEFT:
-            numFrame = 1;
-            loadIMG("res/standingL.png", renderer);
-            break;
-        case Action::STANDING_RIGHT:
-            numFrame = 1;
-            loadIMG("res/standingR.png", renderer);
-            break;
-        case Action::WALKING_LEFT:
-            numFrame = 3;
-            loadIMG("res/walkingL.png", renderer);
-            break;
-        case Action::WALKING_RIGHT:
-            numFrame = 3;
-            loadIMG("res/walkingR.png", renderer);
-            break;
-        case Action::LAYING_DOWN_LEFT:
-            numFrame = 1;
-            loadIMG("res/laydownL.png", renderer);
-            break;
-        case Action::LAYING_DOWN_RIGHT:
-            numFrame = 1;
-            loadIMG("res/laydownR.png", renderer);
-            break;
-        case Action::AIM_UP_RIGHT:
-            numFrame = 1;
-            loadIMG("res/upR.png", renderer);
-            break;
-        case Action::AIM_UP_LEFT:
-            numFrame = 1;
-            loadIMG("res/upL.png", renderer);
-            break;
-        }
-    }
+    // }
     if ((int)inputQueue.size() != 0 || status.onGround == false)
     {
         aCurFrame++;
@@ -141,7 +140,7 @@ void Player::show(SDL_Renderer *renderer)
     SDL_RenderCopy(renderer, texture, curClip, &renderQuad);
 }
 
-void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
+void Player::getInput(SDL_Event e, SDL_Renderer *renderer)
 {
     if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
     {
@@ -193,7 +192,7 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
                 if (inputQueue[i] == Input::DOWN)
                     inputQueue.erase(inputQueue.begin() + i);
             }
-            
+
             break;
         case SDLK_UP:
             for (int i = 0; i < (int)inputQueue.size(); i++)
@@ -218,12 +217,13 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
             break;
         }
     }
+}
 
-    // std::cout << inputQueue.size() << std::endl;
-
+void Player::handleInputQueue(SDL_Event e, SDL_Renderer *renderer)
+{
     if ((int)inputQueue.size() != 0)
     {
-        if (inputQueue[inputQueue.size() - 1] == Input::X)
+        if (inputQueue.back() == Input::X)
         {
             if (status.onGround == true)
             {
@@ -234,6 +234,10 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
                     {
                         status.isFalling = true;
                         status.onGround = false;
+                        if (direction.right == true)
+                            status.action = Action::STANDING_RIGHT;
+                        if (direction.left == true)
+                            status.action = Action::STANDING_LEFT;
                         flag = true;
                         break;
                     }
@@ -265,14 +269,16 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
                         VelX = SPEED_X;
                         direction.right = true;
                         direction.left = false;
-                        status.action = Action::WALKING_RIGHT;
+                        if (status.onGround == true)
+                            status.action = Action::WALKING_RIGHT;
                     }
                     else
                     {
                         VelX = -SPEED_X;
                         direction.left = true;
                         direction.right = false;
-                        status.action = Action::WALKING_LEFT;
+                        if (status.onGround == true)
+                            status.action = Action::WALKING_LEFT;
                     }
                 }
                 else if ((int)inputQueue_.size() == 2)
@@ -280,7 +286,8 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
                     VelX = SPEED_X;
                     direction.right = true;
                     direction.left = false;
-                    status.action = Action::WALKING_RIGHT;
+                    if (status.onGround == true)
+                        status.action = Action::WALKING_RIGHT;
                 }
             }
             else if ((int)inputQueue.size() == 2)
@@ -290,53 +297,50 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
                     VelX = -SPEED_X;
                     direction.right = false;
                     direction.left = true;
-                    status.action = Action::AIM_DOWN_LEFT_WHILE_WALKING;
+                    if (status.onGround == true)
+                        status.action = Action::AIM_DOWN_LEFT_WHILE_WALKING;
                 }
                 if ((inputQueue[0] == Input::DOWN && inputQueue[1] == Input::RIGHT) || (inputQueue[0] == Input::RIGHT && inputQueue[1] == Input::DOWN))
                 {
                     VelX = SPEED_X;
                     direction.right = true;
                     direction.left = false;
-                    status.action = Action::AIM_DOWN_RIGHT_WHILE_WALKING;
+                    if (status.onGround == true)
+                        status.action = Action::AIM_DOWN_RIGHT_WHILE_WALKING;
                 }
                 if ((inputQueue[0] == Input::UP && inputQueue[1] == Input::LEFT) || (inputQueue[0] == Input::LEFT && inputQueue[1] == Input::UP))
                 {
                     VelX = -SPEED_X;
                     direction.right = false;
                     direction.left = true;
-                    status.action = Action::AIM_UP_LEFT_WHILE_WALKING;
+                    if (status.onGround == true)
+                        status.action = Action::AIM_UP_LEFT_WHILE_WALKING;
                 }
                 if ((inputQueue[0] == Input::UP && inputQueue[1] == Input::RIGHT) || (inputQueue[0] == Input::RIGHT && inputQueue[1] == Input::UP))
                 {
                     VelX = SPEED_X;
                     direction.right = true;
                     direction.left = false;
-                    status.action = Action::AIM_UP_RIGHT_WHILE_WALKING;
+                    if (status.onGround == true)
+                        status.action = Action::AIM_UP_RIGHT_WHILE_WALKING;
                 }
             }
             else
             {
                 if (inputQueue[0] == Input::DOWN)
                 {
-                    if (status.onGround == true && !lay)
+                    if (status.onGround == true)
                     {
-                        lay  = true;
                         if (direction.left == true)
                             status.action = Action::LAYING_DOWN_LEFT;
                         else if (direction.right == true)
-                        {
                             status.action = Action::LAYING_DOWN_RIGHT;
-                        }
                         VelX = 0;
-                        dx = 40;
-                    }
-                    else {
-                        dx = 0;
-                        lay = false;
                     }
                 }
                 else if (inputQueue[0] == Input::UP)
                 {
+                    direction.up = true;
                     if (status.onGround == true)
                     {
                         if (direction.left == true)
@@ -351,14 +355,16 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
                     VelX = SPEED_X;
                     direction.right = true;
                     direction.left = false;
-                    status.action = Action::WALKING_RIGHT;
+                    if (status.onGround == true)
+                        status.action = Action::WALKING_RIGHT;
                 }
                 else if (inputQueue[0] == Input::LEFT)
                 {
                     VelX = -SPEED_X;
                     direction.right = false;
                     direction.left = true;
-                    status.action = Action::WALKING_LEFT;
+                    if (status.onGround == true)
+                        status.action = Action::WALKING_LEFT;
                 }
             }
         }
@@ -366,29 +372,34 @@ void Player::handleInput(SDL_Event e, SDL_Renderer *renderer)
     else
     {
         VelX = 0;
+        if (status.onGround == true)
+        {
+            if (direction.right == true)
+                status.action = Action::STANDING_RIGHT;
+            if (direction.left == true)
+                status.action = Action::STANDING_LEFT;
+        }
     }
 }
 
 void Player::action(Map map)
 {
     // std::cout << (int) status.action;
-    if (VelX == 0 && status.onGround == true && inputQueue.empty())
-    {
-        if (direction.right == true)
-            status.action = Action::STANDING_RIGHT;
-        if (direction.left == true)
-            status.action = Action::STANDING_LEFT;
-    }
+
+    x = x + frameClip[curFrame].w - w[(int)status.action];
+    y = y + frameClip[curFrame].h - h[(int)status.action];
 
     int x1 = x + VelX;
-    int x2 = x1 + 40;
+    int x2 = x1 + w[(int)status.action];
     int y1 = y + VelY;
-    int y2 = y1 + frameClip[curFrame].h;
+    int y2 = y1 + h[(int)status.action];
+    // std::cout << std::boolalpha << status.isFalling << " " << status.onGround << std::endl;
     if ((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 1 ||
          map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 1) &&
-        VelY > 0 && status.isFalling == false && status.onGround == false)
+        VelY >= 0 && status.isFalling == false)
     {
-        y = y2 / TILE_SIZE * TILE_SIZE - frameClip[curFrame].h;
+        // std::cout << h[(int)status.action] << " ";
+        y = y2 / TILE_SIZE * TILE_SIZE - h[(int)status.action] + 15;
         VelY = 0;
         status.onGround = true;
     }
@@ -398,14 +409,12 @@ void Player::action(Map map)
         status.isFalling = false;
         direction.down = false;
     }
-    y += dx;
-    if(lay == true) dx = 0;
-    
 
     // Fall when go out of block 1
-    if (VelY == 0 && status.onGround == true &&
+    if (VelY == 0 &&
         (map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] != 1 && map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] != 1))
     {
+        // std::cout << "X";
         VelY = GRAVITY;
     }
 

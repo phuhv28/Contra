@@ -58,7 +58,8 @@ public:
 
     bool loadIMG(std::string path, SDL_Renderer *renderer);
     void show(SDL_Renderer *renderer);
-    void handleInput(SDL_Event e, SDL_Renderer *renderer);
+    void getInput(SDL_Event e, SDL_Renderer *renderer);
+    void handleInputQueue(SDL_Event e, SDL_Renderer *renderer);
     void action(Map map);
     int getX() { return x; }
     int getY() { return y; }
@@ -82,8 +83,10 @@ private:
     std::vector<Input> inputQueue;
     std::vector<Bullet*> bullet;
     Status status;
-    bool lay;
-    int dx = 0;
+
+
+    int w[13] = {69, 69, 63, 63, 60, 60, 72, 72, 60, 102, 102, 42, 42};
+    int h[13] = {105, 105, 108, 108, 102, 102, 102, 102, 60, 51, 51, 138, 138};
 };
 
 #endif
