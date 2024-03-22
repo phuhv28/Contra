@@ -465,41 +465,89 @@ void Player::createBullet(SDL_Renderer *renderer)
     // std::cout << x << " : " << y << std::endl;
 
     if (status.action == Action::STANDING_LEFT)
+    {
         newBullet->setPos(x + BULLET_SPEED, y + 30);
+        newBullet->setVelX(-BULLET_SPEED);
+        newBullet->setVelY(0);
+    }
     else if (status.action == Action::STANDING_RIGHT)
+    {
         newBullet->setPos(x + 72 - BULLET_SPEED, y + 30);
+        newBullet->setVelX(BULLET_SPEED);
+        newBullet->setVelY(0);
+    }
     else if (status.action == Action::AIM_DOWN_LEFT_WHILE_WALKING)
-        newBullet->setPos(x + BULLET_SPEED, y + 67);
+    {
+        newBullet->setPos(x + BULLET_SPEED * cos(M_PI * 1 / 8), y - BULLET_SPEED * sin(M_PI * 7 / 8) + 67);
+        newBullet->setVelX(-BULLET_SPEED * cos(M_PI * 1 / 8));
+        newBullet->setVelY(BULLET_SPEED * sin(M_PI * 7 / 8));
+    }
     else if (status.action == Action::AIM_DOWN_RIGHT_WHILE_WALKING)
-        newBullet->setPos(x + 69 - BULLET_SPEED, y + 67);
+    {
+        newBullet->setPos(x + 69 - BULLET_SPEED * cos(M_PI * 1 / 8), y - BULLET_SPEED * sin(M_PI * 7 / 8) + 67);
+        newBullet->setVelX(BULLET_SPEED * cos(M_PI * 1 / 8));
+        newBullet->setVelY(BULLET_SPEED * sin(M_PI * 7 / 8));
+    }
     else if (status.action == Action::AIM_UP_LEFT_WHILE_WALKING)
-        newBullet->setPos(x + BULLET_SPEED, y + 3);
+    {
+        newBullet->setPos(x + BULLET_SPEED * cos(M_PI * 1 / 8), y + BULLET_SPEED * sin(M_PI * 7 / 8) + 3);
+        newBullet->setVelX(-BULLET_SPEED * cos(M_PI * 1 / 8));
+        newBullet->setVelY(-BULLET_SPEED * sin(M_PI * 7 / 8));
+    }
     else if (status.action == Action::AIM_UP_RIGHT_WHILE_WALKING)
-        newBullet->setPos(x + 63 - BULLET_SPEED, y + 3);
+    {
+        newBullet->setPos(x + 63 - BULLET_SPEED * cos(M_PI * 1 / 8), y + BULLET_SPEED * sin(M_PI * 7 / 8) + 3);
+        newBullet->setVelX(BULLET_SPEED * cos(M_PI * 1 / 8));
+        newBullet->setVelY(-BULLET_SPEED * sin(M_PI * 7 / 8));
+    }
     else if (status.action == Action::AIM_UP_LEFT)
-        newBullet->setPos(x + 6 + BULLET_SPEED, y);
+    {
+        newBullet->setPos(x + 6, y + BULLET_SPEED);
+        newBullet->setVelX(0);
+        newBullet->setVelY(-BULLET_SPEED);
+    }
     else if (status.action == Action::AIM_UP_RIGHT)
-        newBullet->setPos(x + 26 - BULLET_SPEED, y);
+    {
+        newBullet->setPos(x + 26, y + BULLET_SPEED);
+        newBullet->setVelX(0);
+        newBullet->setVelY(-BULLET_SPEED);
+    }
     else if (status.action == Action::LAYING_DOWN_LEFT)
+    {
         newBullet->setPos(x + BULLET_SPEED, y + 19);
+        newBullet->setVelX(-BULLET_SPEED);
+        newBullet->setVelY(0);
+    }
     else if (status.action == Action::LAYING_DOWN_RIGHT)
+    {
         newBullet->setPos(x + 102 - BULLET_SPEED, y + 19);
+        newBullet->setVelX(BULLET_SPEED);
+        newBullet->setVelY(0);
+    }
     else if (status.action == Action::JUMPING)
+    {
         newBullet->setPos(x + 30 - BULLET_SPEED, y + 30);
+    }
     else if (status.action == Action::AIM_RIGHT_WHILE_WALKING)
     {
         newBullet->setPos(x + 81 - BULLET_SPEED, y + 30);
+        newBullet->setVelX(BULLET_SPEED);
+        newBullet->setVelY(0);
         // std::cout << 100;
     }
     else if (status.action == Action::AIM_LEFT_WHILE_WALKING)
+    {
         newBullet->setPos(x + BULLET_SPEED, y + 30);
+        newBullet->setVelX(-BULLET_SPEED);
+        newBullet->setVelY(0);
+    }
     else
         newBullet->setPos(x, y);
 
-    if (direction.left == true)
-        newBullet->setVelX(-BULLET_SPEED);
-    if (direction.right == true)
-        newBullet->setVelX(BULLET_SPEED);
+    // if (direction.left == true)
+    //     newBullet->setVelX(-BULLET_SPEED);
+    // if (direction.right == true)
+    //     newBullet->setVelX(BULLET_SPEED);
     newBullet->setOnScreen();
 
     bullet.push_back(newBullet);
