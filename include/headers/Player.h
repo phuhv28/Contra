@@ -4,6 +4,7 @@
 #include "Constants.h"
 #include "Object.h"
 #include "Bullet.h"
+#include "Timer.h"
 
 
 enum class Input
@@ -32,7 +33,8 @@ enum class Action
     LAYING_DOWN_RIGHT,
     AIM_UP_LEFT,
     AIM_UP_RIGHT,
-
+    AIM_LEFT_WHILE_WALKING,
+    AIM_RIGHT_WHILE_WALKING
 };
 
 struct Direction
@@ -83,10 +85,11 @@ private:
     std::vector<Input> inputQueue;
     std::vector<Bullet*> bullet;
     Status status;
+    Timer clock;
 
 
-    int w[13] = {69, 69, 63, 63, 60, 60, 72, 72, 60, 102, 102, 42, 42};
-    int h[13] = {105, 105, 108, 108, 102, 102, 102, 102, 60, 51, 51, 138, 138};
+    int w[15] = {69, 69, 63, 63, 60, 60, 72, 72, 60, 102, 102, 42, 42, 81, 81};
+    int h[15] = {105, 105, 108, 108, 102, 102, 102, 102, 60, 51, 51, 138, 138, 102, 102};
 };
 
 #endif

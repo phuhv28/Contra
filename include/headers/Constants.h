@@ -10,13 +10,15 @@
 #include <vector>
 #include <algorithm>
 
+#define CLOCK_NOW std::chrono::system_clock::now
+typedef std::chrono::duration<double, std::milli> ElapsedTime;
+
 
 const int SCREEN_WIDTH = 768;
 const int SCREEN_HEIGHT = 672;
 const int FPS = 30;
 const double SCREEN_TICKS_PER_FRAME = 1000.0 / FPS;
 const int SLOWMOTION_ANIMATION_RATE = 4;
-const int PLAYER_HEIGHT = 105;
 const int BULLET_SPEED = 20;
 
 const int MAX_NUM_FRAME = 10;

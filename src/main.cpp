@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 
             while (!quit)
             {
-                auto start = std::chrono::system_clock::now();
+                auto start = CLOCK_NOW();
                 while (SDL_PollEvent(&e) != 0)
                 {
                     if (e.type == SDL_QUIT)
@@ -51,9 +51,10 @@ int main(int argc, char *argv[])
                     player.getInput(e, renderer);
                 }
 
-                auto end = std::chrono::system_clock::now();
+                auto end = CLOCK_NOW();
 
-                std::chrono::duration<double> elapsedTime = end - start;
+                ElapsedTime elapsedTime = end - start;
+                // std::cout << elapsedTime.count() << " ";
 
                 if (elapsedTime.count() < SCREEN_TICKS_PER_FRAME)
                 {
