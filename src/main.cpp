@@ -9,6 +9,7 @@ Object backGround;
 SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 Player player(&camera);
 GameMap map;
+SDL_Event e;
 
 bool init();
 void setCamera();
@@ -37,11 +38,9 @@ int main(int argc, char *argv[])
 
             player.loadIMG("res/standingR.png", renderer);
 
-            SDL_Event e;
-
             while (!quit)
             {
-                auto start = std::chrono::system_clock::now();
+                auto start = CLOCK_NOW();
                 while (SDL_PollEvent(&e) != 0)
                 {
                     if (e.type == SDL_QUIT)
@@ -49,12 +48,13 @@ int main(int argc, char *argv[])
                         quit = true;
                     }
 
-                    player.handleInput(e, renderer);
+                    player.getInput(e, renderer);
                 }
 
-                auto end = std::chrono::system_clock::now();
+                auto end = CLOCK_NOW();
 
-                std::chrono::duration<double> elapsedTime = end - start;
+                ElapsedTime elapsedTime = end - start;
+                // std::cout << elapsedTime.count() << " ";
 
                 if (elapsedTime.count() < SCREEN_TICKS_PER_FRAME)
                 {
@@ -148,6 +148,7 @@ void setCamera()
 
 void renderGamePlay()
 {
+    player.handleInputQueue(e, renderer);
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(renderer);
 

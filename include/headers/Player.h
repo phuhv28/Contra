@@ -4,6 +4,7 @@
 #include "Constants.h"
 #include "Object.h"
 #include "Bullet.h"
+#include "Timer.h"
 
 
 enum class Input
@@ -11,7 +12,29 @@ enum class Input
     NO_INPUT,
     LEFT,
     RIGHT,
-    JUMP
+    X,
+    Z,
+    DOWN,
+    UP
+};
+
+enum class Action
+{
+    AIM_DOWN_RIGHT_WHILE_WALKING,
+    AIM_DOWN_LEFT_WHILE_WALKING,
+    AIM_UP_LEFT_WHILE_WALKING,
+    AIM_UP_RIGHT_WHILE_WALKING,
+    WALKING_LEFT,
+    WALKING_RIGHT,
+    STANDING_LEFT,
+    STANDING_RIGHT,
+    JUMPING,
+    LAYING_DOWN_LEFT,
+    LAYING_DOWN_RIGHT,
+    AIM_UP_LEFT,
+    AIM_UP_RIGHT,
+    AIM_LEFT_WHILE_WALKING,
+    AIM_RIGHT_WHILE_WALKING
 };
 
 struct Direction
@@ -25,6 +48,7 @@ struct Status
     bool isFalling;
     bool onGround;
     bool isFiring;
+    Action action;
 };
 
 
@@ -36,7 +60,8 @@ public:
 
     bool loadIMG(std::string path, SDL_Renderer *renderer);
     void show(SDL_Renderer *renderer);
-    void handleInput(SDL_Event e, SDL_Renderer *renderer);
+    void getInput(SDL_Event e, SDL_Renderer *renderer);
+    void handleInputQueue(SDL_Event e, SDL_Renderer *renderer);
     void action(Map map);
     int getX() { return x; }
     int getY() { return y; }
@@ -60,7 +85,11 @@ private:
     std::vector<Input> inputQueue;
     std::vector<Bullet*> bullet;
     Status status;
+    Timer clock;
 
+
+    int w[15] = {69, 69, 63, 63, 60, 60, 72, 72, 60, 102, 102, 42, 42, 81, 81};
+    int h[15] = {105, 105, 108, 108, 102, 102, 102, 102, 60, 51, 51, 138, 138, 102, 102};
 };
 
 #endif
