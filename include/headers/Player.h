@@ -55,7 +55,7 @@ struct Status
 class Player : public Object
 {
 public:
-    Player(const SDL_Rect *camera);
+    Player();
     ~Player();
 
     bool loadIMG(std::string path, SDL_Renderer *renderer);
@@ -65,12 +65,13 @@ public:
     void action(Map map);
     int getX() { return x; }
     int getY() { return y; }
-    int getFrameW() { return frameW;}
-    int getFrameH() { return frameH;}
+    int getFrameW() { return frameW; }
+    int getFrameH() { return frameH; }
     void setBullet(std::vector<Bullet*> bulletList) { bullet = bulletList; }
     std::vector<Bullet*> getBullet() const { return bullet; }
     void createBullet(SDL_Renderer *renderer);
     void handleBullet(SDL_Renderer *renderer);
+    void setCam(const SDL_Rect &camera);
 
 private:
     const SDL_Rect *camera;

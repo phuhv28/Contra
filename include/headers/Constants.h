@@ -23,7 +23,8 @@ const int SLOWMOTION_ANIMATION_RATE = 4;
 const int BULLET_SPEED = 20;
 
 const int MAX_NUM_FRAME = 10;
-const int SPEED_X = 10;
+const int PLAYER_SPEED_X = 10;
+const int ENEMY_SPEED_X = 7;
 const int GRAVITY = 10;
 
 #define TILE_SIZE  96

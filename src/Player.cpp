@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(const SDL_Rect *camera)
+Player::Player()
 {
     x = 100;
     y = 0;
@@ -20,6 +20,12 @@ Player::Player(const SDL_Rect *camera)
 Player::~Player()
 {
 }
+
+void Player::setCam(const SDL_Rect &camera)
+{
+    this->camera = &camera;
+}
+
 
 bool Player::loadIMG(std::string path, SDL_Renderer *renderer)
 {
@@ -252,7 +258,7 @@ void Player::handleInputQueue(SDL_Event e, SDL_Renderer *renderer)
             {
                 if (inputQueue_[0] == Input::RIGHT)
                 {
-                    VelX = SPEED_X;
+                    VelX = PLAYER_SPEED_X;
                     direction.right = true;
                     direction.left = false;
                     if (status.onGround == true)
@@ -260,7 +266,7 @@ void Player::handleInputQueue(SDL_Event e, SDL_Renderer *renderer)
                 }
                 else
                 {
-                    VelX = -SPEED_X;
+                    VelX = -PLAYER_SPEED_X;
                     direction.left = true;
                     direction.right = false;
                     if (status.onGround == true)
@@ -269,7 +275,7 @@ void Player::handleInputQueue(SDL_Event e, SDL_Renderer *renderer)
             }
             else if ((int)inputQueue_.size() == 2)
             {
-                VelX = SPEED_X;
+                VelX = PLAYER_SPEED_X;
                 direction.right = true;
                 direction.left = false;
                 if (status.onGround == true)
@@ -280,7 +286,7 @@ void Player::handleInputQueue(SDL_Event e, SDL_Renderer *renderer)
         {
             if ((inputQueue[0] == Input::DOWN && inputQueue[1] == Input::LEFT) || (inputQueue[0] == Input::LEFT && inputQueue[1] == Input::DOWN))
             {
-                VelX = -SPEED_X;
+                VelX = -PLAYER_SPEED_X;
                 direction.right = false;
                 direction.left = true;
                 if (status.onGround == true)
@@ -288,7 +294,7 @@ void Player::handleInputQueue(SDL_Event e, SDL_Renderer *renderer)
             }
             if ((inputQueue[0] == Input::DOWN && inputQueue[1] == Input::RIGHT) || (inputQueue[0] == Input::RIGHT && inputQueue[1] == Input::DOWN))
             {
-                VelX = SPEED_X;
+                VelX = PLAYER_SPEED_X;
                 direction.right = true;
                 direction.left = false;
                 if (status.onGround == true)
@@ -296,7 +302,7 @@ void Player::handleInputQueue(SDL_Event e, SDL_Renderer *renderer)
             }
             if ((inputQueue[0] == Input::UP && inputQueue[1] == Input::LEFT) || (inputQueue[0] == Input::LEFT && inputQueue[1] == Input::UP))
             {
-                VelX = -SPEED_X;
+                VelX = -PLAYER_SPEED_X;
                 direction.right = false;
                 direction.left = true;
                 if (status.onGround == true)
@@ -304,7 +310,7 @@ void Player::handleInputQueue(SDL_Event e, SDL_Renderer *renderer)
             }
             if ((inputQueue[0] == Input::UP && inputQueue[1] == Input::RIGHT) || (inputQueue[0] == Input::RIGHT && inputQueue[1] == Input::UP))
             {
-                VelX = SPEED_X;
+                VelX = PLAYER_SPEED_X;
                 direction.right = true;
                 direction.left = false;
                 if (status.onGround == true)
@@ -312,7 +318,7 @@ void Player::handleInputQueue(SDL_Event e, SDL_Renderer *renderer)
             }
             if ((inputQueue[0] == Input::LEFT && inputQueue[1] == Input::RIGHT) || (inputQueue[0] == Input::RIGHT && inputQueue[1] == Input::LEFT))
             {
-                VelX = SPEED_X;
+                VelX = PLAYER_SPEED_X;
                 direction.right = true;
                 direction.left = false;
                 if (status.onGround == true)
@@ -346,7 +352,7 @@ void Player::handleInputQueue(SDL_Event e, SDL_Renderer *renderer)
             }
             else if (inputQueue[0] == Input::RIGHT)
             {
-                VelX = SPEED_X;
+                VelX = PLAYER_SPEED_X;
                 direction.right = true;
                 direction.left = false;
                 if (status.onGround == true)
@@ -354,7 +360,7 @@ void Player::handleInputQueue(SDL_Event e, SDL_Renderer *renderer)
             }
             else if (inputQueue[0] == Input::LEFT)
             {
-                VelX = -SPEED_X;
+                VelX = -PLAYER_SPEED_X;
                 direction.right = false;
                 direction.left = true;
                 if (status.onGround == true)
@@ -452,7 +458,11 @@ void Player::action(Map map)
     if (x < 0 || x > MAX_MAP_X * TILE_SIZE)
         x = 0;
     if (y < 0 || y > MAX_MAP_Y * TILE_SIZE)
-        y = 0;
+    {
+        x = camera->x + TILE_SIZE / 2;
+        y = TILE_SIZE;
+        VelY = GRAVITY;
+    }
 }
 
 void Player::createBullet(SDL_Renderer *renderer)
@@ -527,6 +537,11 @@ void Player::createBullet(SDL_Renderer *renderer)
     else if (status.action == Action::JUMPING)
     {
         newBullet->setPos(x + 30 - BULLET_SPEED, y + 30);
+        if (direction.left == true)
+            newBullet->setVelX(-BULLET_SPEED);
+        if (direction.right == true)
+            newBullet->setVelX(BULLET_SPEED);
+        // Xử lí sau
     }
     else if (status.action == Action::AIM_RIGHT_WHILE_WALKING)
     {
@@ -544,10 +559,6 @@ void Player::createBullet(SDL_Renderer *renderer)
     else
         newBullet->setPos(x, y);
 
-    // if (direction.left == true)
-    //     newBullet->setVelX(-BULLET_SPEED);
-    // if (direction.right == true)
-    //     newBullet->setVelX(BULLET_SPEED);
     newBullet->setOnScreen();
 
     bullet.push_back(newBullet);
