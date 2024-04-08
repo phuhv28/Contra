@@ -75,6 +75,7 @@ public:
     void setCam(const SDL_Rect &camera);
     void setDied() { status.action = Action::DEAD; }
     bool isDead() { return status.action == Action::DEAD; }
+    void removeBullet(int index);
 
 private:
     const SDL_Rect *camera;

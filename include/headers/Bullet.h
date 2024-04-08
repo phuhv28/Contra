@@ -12,6 +12,8 @@ public:
     void move(const SDL_Rect *camera);
     void setVelX(int VelX_) { VelX = VelX_; }
     void setVelY(int VelY_) { VelY = VelY_; }
+    int getX() { return x; }
+    int getY() { return y; }
     void setPos(int x, int y) { this->x = x; this->y = y; }
     void setOnScreen() { onScreen = true; }
     bool getOnScreen() const { return onScreen; }

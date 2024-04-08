@@ -90,20 +90,19 @@ void Game::setCamera()
 std::vector<Enemy *> Game::createEnemies()
 {
     std::vector<Enemy *> enemyList;
-    Enemy *enemy = new Enemy[10];
 
-    Enemy *pEnemy = (enemy);
+    Enemy *pEnemy = new Enemy();
 
     pEnemy->setX(768);
     pEnemy->setY(207);
     enemyList.push_back(pEnemy);
 
-    pEnemy = enemy + 1;
+    pEnemy = new Enemy();
     pEnemy->setX(864);
     pEnemy->setY(207);
     enemyList.push_back(pEnemy);
 
-    pEnemy = enemy + 2;
+    pEnemy = new Enemy();
     pEnemy->setX(960);
     pEnemy->setY(207);
     enemyList.push_back(pEnemy);
@@ -111,49 +110,62 @@ std::vector<Enemy *> Game::createEnemies()
     return enemyList;
 }
 
-
-//Copy Lazyfoo
-bool Game::checkCol(const SDL_Rect& a, const SDL_Rect& b)
+void Game::removeEnemy(int index)
 {
-    //The sides of the rectangles
+    int size = enemyList.size();
+    if (size > 0 && index < size)
+    {
+        if (enemyList[index] != NULL)
+        {
+            enemyList[index]->free();
+            delete enemyList[index];
+            enemyList.erase(enemyList.begin() + index);
+        }
+    }
+}
+
+// Copy Lazyfoo
+bool Game::checkCol(const SDL_Rect &a, const SDL_Rect &b)
+{
+    // The sides of the rectangles
     int leftA, leftB;
     int rightA, rightB;
     int topA, topB;
     int bottomA, bottomB;
 
-    //Calculate the sides of rect A
+    // Calculate the sides of rect A
     leftA = a.x;
     rightA = a.x + a.w;
     topA = a.y;
     bottomA = a.y + a.h;
 
-    //Calculate the sides of rect B
+    // Calculate the sides of rect B
     leftB = b.x;
     rightB = b.x + b.w;
     topB = b.y;
     bottomB = b.y + b.h;
-    //If any of the sides from A are outside of B
-    if( bottomA <= topB )
+    // If any of the sides from A are outside of B
+    if (bottomA <= topB)
     {
         return false;
     }
 
-    if( topA >= bottomB )
+    if (topA >= bottomB)
     {
         return false;
     }
 
-    if( rightA <= leftB )
+    if (rightA <= leftB)
     {
         return false;
     }
 
-    if( leftA >= rightB )
+    if (leftA >= rightB)
     {
         return false;
     }
 
-    //If none of the sides from A are outside B
+    // If none of the sides from A are outside B
     return true;
 }
 
@@ -169,8 +181,30 @@ void Game::handleCol()
             // std:: cout << b.x << " " << b.y << " " << b.w << " " << b.h << std::endl;
             if (checkCol(a, b))
             {
-                if(!player.isDead())
+                if (!player.isDead())
                     player.setDied();
+            }
+        }
+    }
+
+    std::vector<Bullet *> bulletList = player.getBullet();
+
+    for (int i = 0; i < enemyList.size(); i++)
+    {
+        if (enemyList[i] != NULL)
+        {
+            for (int j = 0; j < bulletList.size(); j++)
+            {
+                if (bulletList[j] != NULL)
+                {
+                    SDL_Rect a = {bulletList[j]->getX(), bulletList[j]->getY(), 10, 10};
+                    SDL_Rect b = {enemyList[i]->getX(), enemyList[i]->getY(), 68, 96};
+                    if (checkCol(a, b))
+                    {
+                        removeEnemy(i);
+                        player.removeBullet(j);
+                    }
+                }
             }
         }
     }

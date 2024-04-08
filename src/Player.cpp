@@ -51,6 +51,20 @@ bool Player::loadIMG(std::string path, SDL_Renderer *renderer)
     return flag;
 }
 
+void Player::removeBullet(int index)
+{
+    int size = bullet.size();
+    if (size > 0 && index < size)
+    {
+        if (bullet[index] != NULL)
+        {
+            delete bullet[index];
+            bullet.erase(bullet.begin() + index);
+        }
+    }
+}
+
+
 void Player::show(SDL_Renderer *renderer)
 {
     // std::cout << x << " " << y << std::endl;

@@ -25,3 +25,4 @@ void Bullet::renderBullet(SDL_Renderer *renderer, const SDL_Rect *camera)
     SDL_Rect renderQuad = {x - camera->x, y - camera->y, rect.w, rect.h};
     SDL_RenderCopy(renderer, texture, NULL, &renderQuad);
 }
+

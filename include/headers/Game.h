@@ -18,6 +18,7 @@ public:
     void handleCol();
     void renderGamePlay();
     bool checkCol(const SDL_Rect& a, const SDL_Rect& b);
+    void removeEnemy(int index);
     void close();
     void run();
 
