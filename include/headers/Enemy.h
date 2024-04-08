@@ -14,6 +14,8 @@ public:
     void action(Map map, const SDL_Rect &camera);
     void setX( int x_ ) { x = x_; }
     void setY( int y_ ) { y = y_; }
+    int getX() { return x; }
+    int getY() { return y; }
 
 private:
     // const SDL_Rect *camera;

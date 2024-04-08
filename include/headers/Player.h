@@ -34,7 +34,8 @@ enum class Action
     AIM_UP_LEFT,
     AIM_UP_RIGHT,
     AIM_LEFT_WHILE_WALKING,
-    AIM_RIGHT_WHILE_WALKING
+    AIM_RIGHT_WHILE_WALKING,
+    DEAD
 };
 
 struct Direction
@@ -72,6 +73,8 @@ public:
     void createBullet(SDL_Renderer *renderer);
     void handleBullet(SDL_Renderer *renderer);
     void setCam(const SDL_Rect &camera);
+    void setDied() { status.action = Action::DEAD; }
+    bool isDead() { return status.action == Action::DEAD; }
 
 private:
     const SDL_Rect *camera;
@@ -89,8 +92,8 @@ private:
     Timer clock;
 
 
-    int w[15] = {69, 69, 63, 63, 60, 60, 72, 72, 60, 102, 102, 42, 42, 81, 81};
-    int h[15] = {105, 105, 108, 108, 102, 102, 102, 102, 60, 51, 51, 138, 138, 102, 102};
+    int w[16] = {69, 69, 63, 63, 60, 60, 72, 72, 60, 102, 102, 42, 42, 81, 81, 102};
+    int h[16] = {105, 105, 108, 108, 102, 102, 102, 102, 60, 51, 51, 138, 138, 102, 102, 70};
 };
 
 #endif

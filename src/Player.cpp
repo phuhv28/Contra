@@ -5,6 +5,8 @@ Player::Player()
     x = 100;
     y = 0;
     curFrame = 0;
+    frameH = 0;
+    frameW = 0;
     VelX = 0;
     VelY = GRAVITY;
     direction.right = true;
@@ -54,6 +56,10 @@ void Player::show(SDL_Renderer *renderer)
     // std::cout << x << " " << y << std::endl;
     switch (status.action)
     {
+    case Action::DEAD:
+        numFrame = 5;
+        loadIMG("res/die.png", renderer);
+        break;
     case Action::JUMPING:
         numFrame = 3;
         loadIMG("res/jump.png", renderer);
@@ -116,7 +122,7 @@ void Player::show(SDL_Renderer *renderer)
         break;
     }
 
-    if ((int)inputQueue.size() != 0 || status.onGround == false)
+    if ((int)inputQueue.size() != 0 || status.onGround == false || isDead())
     {
         aCurFrame++;
         if (aCurFrame >= numFrame * SLOWMOTION_ANIMATION_RATE)
@@ -128,6 +134,7 @@ void Player::show(SDL_Renderer *renderer)
     }
 
     curFrame = aCurFrame / SLOWMOTION_ANIMATION_RATE;
+    std::cout << curFrame << " ";
 
     SDL_Rect *curClip = &frameClip[curFrame];
 
@@ -370,13 +377,16 @@ void Player::handleInputQueue(SDL_Event e, SDL_Renderer *renderer)
     }
     else
     {
-        VelX = 0;
-        if (status.onGround == true)
+        if (status.action != Action::DEAD)
         {
-            if (direction.right == true)
-                status.action = Action::STANDING_RIGHT;
-            if (direction.left == true)
-                status.action = Action::STANDING_LEFT;
+            VelX = 0;
+            if (status.onGround == true)
+            {
+                if (direction.right == true)
+                    status.action = Action::STANDING_RIGHT;
+                if (direction.left == true)
+                    status.action = Action::STANDING_LEFT;
+            }
         }
     }
 

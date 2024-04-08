@@ -15,7 +15,9 @@ public:
     bool init();
     void setCamera();
     std::vector<Enemy *> createEnemies();
+    void handleCol();
     void renderGamePlay();
+    bool checkCol(const SDL_Rect& a, const SDL_Rect& b);
     void close();
     void run();
 

@@ -111,6 +111,71 @@ std::vector<Enemy *> Game::createEnemies()
     return enemyList;
 }
 
+
+//Copy Lazyfoo
+bool Game::checkCol(const SDL_Rect& a, const SDL_Rect& b)
+{
+    //The sides of the rectangles
+    int leftA, leftB;
+    int rightA, rightB;
+    int topA, topB;
+    int bottomA, bottomB;
+
+    //Calculate the sides of rect A
+    leftA = a.x;
+    rightA = a.x + a.w;
+    topA = a.y;
+    bottomA = a.y + a.h;
+
+    //Calculate the sides of rect B
+    leftB = b.x;
+    rightB = b.x + b.w;
+    topB = b.y;
+    bottomB = b.y + b.h;
+    //If any of the sides from A are outside of B
+    if( bottomA <= topB )
+    {
+        return false;
+    }
+
+    if( topA >= bottomB )
+    {
+        return false;
+    }
+
+    if( rightA <= leftB )
+    {
+        return false;
+    }
+
+    if( leftA >= rightB )
+    {
+        return false;
+    }
+
+    //If none of the sides from A are outside B
+    return true;
+}
+
+void Game::handleCol()
+{
+    for (int i = 0; i < enemyList.size(); i++)
+    {
+        if (enemyList[i] != NULL)
+        {
+            SDL_Rect a = {enemyList[i]->getX(), enemyList[i]->getY(), 68, 96};
+            // std:: cout << a.x << " " << a.y << " " << a.w << " " << a.h << std::endl;
+            SDL_Rect b = {player.getX(), player.getY(), player.getFrameW(), player.getFrameH()};
+            // std:: cout << b.x << " " << b.y << " " << b.w << " " << b.h << std::endl;
+            if (checkCol(a, b))
+            {
+                if(!player.isDead())
+                    player.setDied();
+            }
+        }
+    }
+}
+
 void Game::renderGamePlay()
 {
     player.handleInputQueue(e, renderer);
@@ -125,6 +190,7 @@ void Game::renderGamePlay()
     }
 
     player.action(map.getMap());
+    handleCol();
 
     setCamera();
     backGround.render(renderer, &camera);
