@@ -15,7 +15,7 @@ bool Game::init()
 {
     bool success = true;
 
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
     {
         std::cout << "SDL could not initialize! SDL Error:\n"
                   << SDL_GetError();
@@ -55,6 +55,11 @@ bool Game::init()
                               << IMG_GetError();
                     success = false;
                 }
+                // Initialize SDL_mixer
+                if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+                {
+                    printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+                }
             }
         }
     }
@@ -87,48 +92,61 @@ void Game::setCamera()
     }
 }
 
-std::vector<Enemy *> Game::createEnemies()
+std::vector<Enemy1 *> Game::createEnemies1()
 {
-    std::vector<Enemy *> enemyList;
+    std::vector<Enemy1 *> enemyList1;
 
-    Enemy *pEnemy = new Enemy();
+    Enemy1 *pEnemy = new Enemy1();
 
     pEnemy->setX(768);
     pEnemy->setY(207);
-    enemyList.push_back(pEnemy);
+    enemyList1.push_back(pEnemy);
 
-    pEnemy = new Enemy();
+    pEnemy = new Enemy1();
     pEnemy->setX(864);
     pEnemy->setY(207);
-    enemyList.push_back(pEnemy);
+    enemyList1.push_back(pEnemy);
 
-    pEnemy = new Enemy();
+    pEnemy = new Enemy1();
     pEnemy->setX(960);
     pEnemy->setY(207);
-    enemyList.push_back(pEnemy);
+    enemyList1.push_back(pEnemy);
 
-    return enemyList;
+    return enemyList1;
+}
+
+std::vector<Enemy2 *> Game::createEnemies2()
+{
+    std::vector<Enemy2 *> enemyList2;
+
+    Enemy2 *pEnemy = new Enemy2();
+
+    pEnemy->setX(960);
+    pEnemy->setY(474);
+    enemyList2.push_back(pEnemy);
+
+    return enemyList2;
 }
 
 void Game::removeEnemy(int index)
 {
-    int size = enemyList.size();
+    int size = enemyList1.size();
     if (size > 0 && index < size)
     {
-        if (enemyList[index] != NULL)
+        if (enemyList1[index] != NULL)
         {
-            enemyList[index]->free();
-            delete enemyList[index];
-            enemyList.erase(enemyList.begin() + index);
+            enemyList1[index]->free();
+            delete enemyList1[index];
+            enemyList1.erase(enemyList1.begin() + index);
         }
     }
 }
 
 void Game::handleEnemy()
 {
-    for (int i = 0; i < enemyList.size(); i++)
+    for (int i = 0; i < enemyList1.size(); i++)
     {
-        if (enemyList[i]->getX() < camera.x || enemyList[i]->getY() < 0 || enemyList[i]->getY() > SCREEN_HEIGHT)
+        if (enemyList1[i]->getX() < camera.x || enemyList1[i]->getY() < 0 || enemyList1[i]->getY() > SCREEN_HEIGHT)
             removeEnemy(i);
     }
 }
@@ -180,11 +198,11 @@ bool Game::checkCol(const SDL_Rect &a, const SDL_Rect &b)
 
 void Game::handleCol()
 {
-    for (int i = 0; i < enemyList.size(); i++)
+    for (int i = 0; i < enemyList1.size(); i++)
     {
-        if (enemyList[i] != NULL)
+        if (enemyList1[i] != NULL)
         {
-            SDL_Rect a = {enemyList[i]->getX(), enemyList[i]->getY(), 68, 96};
+            SDL_Rect a = {enemyList1[i]->getX(), enemyList1[i]->getY(), 68, 96};
             // std:: cout << a.x << " " << a.y << " " << a.w << " " << a.h << std::endl;
             SDL_Rect b = {player.getX(), player.getY(), player.getFrameW(), player.getFrameH()};
             // std:: cout << b.x << " " << b.y << " " << b.w << " " << b.h << std::endl;
@@ -198,16 +216,16 @@ void Game::handleCol()
 
     std::vector<Bullet *> bulletList = player.getBullet();
 
-    for (int i = 0; i < enemyList.size(); i++)
+    for (int i = 0; i < enemyList1.size(); i++)
     {
-        if (enemyList[i] != NULL)
+        if (enemyList1[i] != NULL)
         {
             for (int j = 0; j < bulletList.size(); j++)
             {
                 if (bulletList[j] != NULL)
                 {
                     SDL_Rect a = {bulletList[j]->getX(), bulletList[j]->getY(), 10, 10};
-                    SDL_Rect b = {enemyList[i]->getX(), enemyList[i]->getY(), 68, 96};
+                    SDL_Rect b = {enemyList1[i]->getX(), enemyList1[i]->getY(), 68, 96};
                     if (checkCol(a, b))
                     {
                         removeEnemy(i);
@@ -221,31 +239,73 @@ void Game::handleCol()
 
 void Game::renderSplashScreen()
 {
-    SDL_Texture *texture = NULL;
+    Mix_PlayChannel(-1, title, 0);
+    SDL_Texture *texture = IMG_LoadTexture(renderer, "res/splashscreen.png");
 
-    SDL_Surface *loadedSurface = IMG_Load("res/splashscreen.png");
-    texture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+    SDL_Rect icon = {0, 0, 36, 20};
+    SDL_Texture *iconTexture = IMG_LoadTexture(renderer, "res/icon1.png");
 
-    SDL_FreeSurface(loadedSurface);
-
-    SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, texture, NULL, NULL);
-    SDL_RenderPresent(renderer);
     bool quit = false;
+    int option = 0;
     while (!quit)
     {
         while (SDL_PollEvent(&e) != 0)
         {
-            if (e.type == SDL_KEYDOWN)
-            {
+            if (e.type == SDL_QUIT)
                 quit = true;
+            if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
+            {
+                switch (e.key.keysym.sym)
+                {
+                case SDLK_UP:
+                    option--;
+                    option = (option + 2) % 2;
+                    break;
+                case SDLK_DOWN:
+                    option++;
+                    option = (option + 2) % 2;
+                    break;
+                case SDLK_RETURN:
+                    quit = true;
+                    if (option == 0)
+                    {
+                    }
+                    else
+                    {
+                    }
+
+                    break;
+                }
             }
+
+            if (option == 0)
+            {
+                icon.x = 156;
+                icon.y = 435;
+            }
+            else
+            {
+                icon.x = 156;
+                icon.y = 480;
+            }
+
+            SDL_RenderCopy(renderer, texture, NULL, NULL);
+
+            SDL_RenderCopy(renderer, iconTexture, NULL, &icon);
+            SDL_RenderPresent(renderer);
         }
     }
 }
 
 void Game::renderGameOver()
 {
+    if (Mix_PlayingMusic() == 1)
+    {
+        Mix_PauseMusic();
+    }
+
+    gameOver = Mix_LoadMUS("res/game_over.wav");
+    Mix_PlayMusic(gameOver, 0);
     SDL_Texture *texture = NULL;
 
     SDL_Surface *loadedSurface = IMG_Load("res/gameover.png");
@@ -275,12 +335,19 @@ void Game::renderGamePlay()
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(renderer);
 
-    for (int i = 0; i < enemyList.size(); i++)
+    for (int i = 0; i < enemyList1.size(); i++)
     {
-        Enemy *pEnemy = enemyList[i];
+        Enemy1 *pEnemy = enemyList1[i];
         if (pEnemy != NULL)
             pEnemy->action(map.getMap(), camera);
     }
+    for (int i = 0; i < enemyList2.size(); i++)
+    {
+        Enemy2 *pEnemy = enemyList2[i];
+        if (pEnemy != NULL)
+            pEnemy->action(map.getMap(), camera, player.getX() + player.getFrameW() / 2, player.getY() + player.getFrameH() / 2, renderer);
+    }
+    // std::cout << enemyList2.size() << " ";
 
     player.action(map.getMap());
     handleCol();
@@ -288,14 +355,28 @@ void Game::renderGamePlay()
     setCamera();
     backGround.render(renderer, &camera);
     player.handleBullet(renderer);
+    for (int i = 0; i < enemyList2.size(); i++)
+    {
+        enemyList2[i]->handleBullet(renderer, camera);
+    }
+
     handleEnemy();
     player.show(renderer);
 
-    for (int i = 0; i < enemyList.size(); i++)
+    for (int i = 0; i < enemyList1.size(); i++)
     {
-        Enemy *pEnemy = enemyList[i];
+        Enemy1 *pEnemy = enemyList1[i];
         if (pEnemy != NULL)
             pEnemy->show(renderer, camera);
+    }
+    for (int i = 0; i < enemyList2.size(); i++)
+    {
+        Enemy2 *pEnemy = enemyList2[i];
+        if (pEnemy != NULL)
+        {
+            pEnemy->show(renderer, camera);
+            // std::cout << 100;
+        }
     }
 
     SDL_RenderPresent(renderer);
@@ -308,6 +389,8 @@ void Game::close()
     window = NULL;
     SDL_DestroyRenderer(renderer);
     renderer = NULL;
+    Mix_FreeChunk(title);
+    title = NULL;
 }
 
 void Game::run()
@@ -327,13 +410,25 @@ void Game::run()
             bool quit = false;
 
             player.setCam(camera);
-            enemyList = createEnemies();
+            enemyList1 = createEnemies1();
+            enemyList2 = createEnemies2();
+            title = Mix_LoadWAV("res/title.wav");
+            fireSound = Mix_LoadWAV("res/rifle.wav");
+
+            if (title == NULL)
+            {
+                printf("Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError());
+            }
+            gMusic = Mix_LoadMUS("res/music.wav");
 
             map.loadMap("map/map.txt");
             player.loadIMG("res/standingR.png", renderer);
 
             renderSplashScreen();
 
+            Mix_Pause(-1);
+            Mix_FreeChunk(title);
+            Mix_PlayMusic(gMusic, -1);
             while (!quit)
             {
                 auto start = CLOCK_NOW();
@@ -344,7 +439,7 @@ void Game::run()
                         quit = true;
                     }
 
-                    player.getInput(e, renderer);
+                    player.getInput(e, renderer, fireSound);
                 }
 
                 auto end = CLOCK_NOW();

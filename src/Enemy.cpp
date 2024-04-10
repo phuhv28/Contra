@@ -1,6 +1,6 @@
 #include "Enemy.h"
 
-Enemy::Enemy()
+Enemy1::Enemy1()
 {
     VelX = -ENEMY_SPEED_X;
     VelY = 0;
@@ -15,11 +15,11 @@ Enemy::Enemy()
     // this->player = player;
 }
 
-Enemy::~Enemy()
+Enemy1::~Enemy1()
 {
 }
 
-bool Enemy::loadIMG(std::string path, SDL_Renderer *renderer)
+bool Enemy1::loadIMG(std::string path, SDL_Renderer *renderer)
 {
     free();
 
@@ -41,7 +41,7 @@ bool Enemy::loadIMG(std::string path, SDL_Renderer *renderer)
     return flag;
 }
 
-void Enemy::show(SDL_Renderer *renderer, const SDL_Rect &camera)
+void Enemy1::show(SDL_Renderer *renderer, const SDL_Rect &camera)
 {
     if (camera.x > x - SCREEN_WIDTH)
     {
@@ -64,7 +64,7 @@ void Enemy::show(SDL_Renderer *renderer, const SDL_Rect &camera)
     }
 }
 
-void Enemy::action(Map map, const SDL_Rect &camera)
+void Enemy1::action(Map map, const SDL_Rect &camera)
 {
     if (camera.x > x - SCREEN_WIDTH)
     {
@@ -90,6 +90,166 @@ void Enemy::action(Map map, const SDL_Rect &camera)
 
         x += VelX;
         y += VelY;
+    }
+}
 
+Enemy2::Enemy2()
+{
+    VelX = -ENEMY_SPEED_X;
+    VelY = 0;
+    x = 1000;
+    y = 2 * TILE_SIZE;
+    numFrame = 6;
+    curFrame = 0;
+    frameH = 0;
+    frameW = 0;
+    status = Enemy1Action::AIM_LEFT;
+    // this->player = player;
+}
+
+Enemy2::~Enemy2()
+{
+}
+
+bool Enemy2::loadIMG(std::string path, SDL_Renderer *renderer)
+{
+    free();
+
+    bool flag = Object::loadIMG(path, renderer);
+    if (!flag)
+        std::cout << "Error!";
+
+    frameW = rect.w / numFrame;
+    frameH = rect.h;
+
+    for (int i = 0; i < numFrame; i++)
+    {
+        frameClip[i].x = i * frameW;
+        frameClip[i].y = 0;
+        frameClip[i].w = frameW;
+        frameClip[i].h = frameH;
+    }
+
+    return flag;
+}
+
+void Enemy2::show(SDL_Renderer *renderer, const SDL_Rect &camera)
+{
+    if (camera.x > x - SCREEN_WIDTH)
+    {
+        loadIMG("res/enemy2.png", renderer);
+        curFrame = (int)status;
+
+        rect.x = x - camera.x;
+        rect.y = y - camera.y;
+
+        SDL_Rect renderQuad = {rect.x, rect.y, frameW, frameH};
+
+        SDL_Rect *curClip = &frameClip[curFrame];
+        SDL_RenderCopy(renderer, texture, curClip, &renderQuad);
+    }
+}
+
+void Enemy2::chooseStatus(int playerX, int playerY)
+{
+    if (playerX < (x + frameW / 2))
+    {
+        if (playerY < y)
+        {
+            status = Enemy1Action::AIM_UP_LEFT;
+        }
+        else if (playerY >= y && playerY < (y + frameH))
+        {
+            status = Enemy1Action::AIM_LEFT;
+        }
+        else
+        {
+            status = Enemy1Action::AIM_DOWN_LEFT;
+        }
+    }
+    else
+    {
+        if (playerY < y)
+        {
+            status = Enemy1Action::AIM_UP_RIGHT;
+        }
+        else if (playerY >= y && playerY < (y + frameH))
+        {
+            status = Enemy1Action::AIM_RIGHT;
+        }
+        else
+        {
+            status = Enemy1Action::AIM_DOWN_RIGHT;
+        }
+    }
+}
+
+void Enemy2::createBullet(int playerX, int playerY, SDL_Renderer *renderer)
+{
+    Bullet *newBullet = new Bullet();
+    newBullet->loadIMG("res/bullet.png", renderer);
+
+    if (status == Enemy1Action::AIM_LEFT)
+    {
+        newBullet->setPos(x - 6, y + 31);
+    }
+    else if (status == Enemy1Action::AIM_RIGHT)
+    {
+        newBullet->setPos(x + frameW, y + 31);
+    }
+    else if (status == Enemy1Action::AIM_UP_LEFT)
+    {
+        newBullet->setPos(x, y);
+    }
+    else if (status == Enemy1Action::AIM_UP_RIGHT)
+    {
+        newBullet->setPos(x + 48, y);
+    }
+    else if (status == Enemy1Action::AIM_DOWN_LEFT)
+    {
+        newBullet->setPos(x, y + 78);
+    }
+    else if (status == Enemy1Action::AIM_DOWN_RIGHT)
+    {
+        newBullet->setPos(x + 71, y + 78);
+    }
+
+    newBullet->setVelX((playerX - newBullet->getX()) / sqrt((playerX - newBullet->getX()) * (playerX - newBullet->getX()) + (playerY - newBullet->getY()) * (playerY - newBullet->getY())) * BULLET_SPEED);
+    newBullet->setVelY((playerY - newBullet->getY()) / sqrt((playerX - newBullet->getX()) * (playerX - newBullet->getX()) + (playerY - newBullet->getY()) * (playerY - newBullet->getY())) * BULLET_SPEED);
+
+
+    newBullet->setOnScreen();
+
+    bulletList.push_back(newBullet);
+}
+
+void Enemy2::handleBullet(SDL_Renderer *renderer, const SDL_Rect& camera)
+{
+    for (int i = 0; i < bulletList.size(); i++)
+    {
+        if (bulletList[i] != NULL)
+        {
+            if (bulletList[i]->getOnScreen() == true)
+            {
+                bulletList[i]->move(&camera);
+                bulletList[i]->renderBullet(renderer, &camera);
+            }
+            else
+            {
+                bulletList[i]->free();
+                delete bulletList[i];
+                bulletList.erase(bulletList.begin() + i);
+            }
+        }
+    }
+}
+
+void Enemy2::action(Map map, const SDL_Rect &camera, int playerX, int playerY, SDL_Renderer *renderer)
+{
+    if (camera.x > x - SCREEN_WIDTH)
+    {
+        chooseStatus(playerX, playerY);
+        createBullet(playerX, playerY, renderer);
+        handleBullet(renderer, camera);
     }
 }

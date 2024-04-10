@@ -14,10 +14,11 @@ public:
     ~Game();
     bool init();
     void setCamera();
-    std::vector<Enemy *> createEnemies();
+    std::vector<Enemy1 *> createEnemies1();
+    std::vector<Enemy2 *> createEnemies2();
     void handleCol();
     void renderGamePlay();
-    bool checkCol(const SDL_Rect& a, const SDL_Rect& b);
+    bool checkCol(const SDL_Rect &a, const SDL_Rect &b);
     void handleEnemy();
     void removeEnemy(int index);
     void renderSplashScreen();
@@ -33,7 +34,15 @@ private:
     Player player;
     GameMap map;
     SDL_Event e;
-    std::vector<Enemy *> enemyList;
+    std::vector<Enemy1 *> enemyList1;
+    std::vector<Enemy2 *> enemyList2;
+    // The music that will be played
+    Mix_Music *gMusic = NULL;
+    Mix_Music *gameOver = NULL;
+
+    // The sound effects that will be used
+    Mix_Chunk *title = NULL;
+    Mix_Chunk *fireSound = NULL;
 };
 
 #endif

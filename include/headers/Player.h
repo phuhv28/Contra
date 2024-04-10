@@ -61,7 +61,7 @@ public:
 
     bool loadIMG(std::string path, SDL_Renderer *renderer);
     void show(SDL_Renderer *renderer);
-    void getInput(SDL_Event e, SDL_Renderer *renderer);
+    void getInput(SDL_Event e, SDL_Renderer *renderer, Mix_Chunk *fireSound);
     void handleInputQueue(SDL_Event e, SDL_Renderer *renderer);
     void action(Map map);
     int getX() { return x; }
@@ -91,6 +91,7 @@ private:
     std::vector<Bullet*> bullet;
     Status status;
     Timer clock;
+    Mix_Chunk *fireSound;
 
 
     int w[16] = {69, 69, 63, 63, 60, 60, 72, 72, 60, 102, 102, 42, 42, 81, 81, 102};

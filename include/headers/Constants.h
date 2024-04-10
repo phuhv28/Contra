@@ -10,6 +10,7 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
+#include <SDL_mixer.h>
 
 #define CLOCK_NOW std::chrono::system_clock::now
 typedef std::chrono::duration<double, std::milli> ElapsedTime;

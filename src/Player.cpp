@@ -17,6 +17,7 @@ Player::Player()
     numFrame = 1;
     status.isFiring = false;
     status.action = Action::JUMPING;
+    fireSound = NULL;
 }
 
 Player::~Player()
@@ -149,7 +150,7 @@ void Player::show(SDL_Renderer *renderer)
     }
 
     curFrame = aCurFrame / SLOWMOTION_ANIMATION_RATE;
-    std::cout << curFrame << " ";
+    // std::cout << curFrame << " ";
 
     SDL_Rect *curClip = &frameClip[curFrame];
 
@@ -170,7 +171,7 @@ void Player::show(SDL_Renderer *renderer)
     SDL_RenderCopy(renderer, texture, curClip, &renderQuad);
 }
 
-void Player::getInput(SDL_Event e, SDL_Renderer *renderer)
+void Player::getInput(SDL_Event e, SDL_Renderer *renderer, Mix_Chunk *fireSound)
 {
     if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
     {
@@ -217,6 +218,7 @@ void Player::getInput(SDL_Event e, SDL_Renderer *renderer)
             break;
         case SDLK_z:
             status.isFiring = true;
+            Mix_PlayChannel(-1, fireSound, 0);
             clock.start();
             break;
         }
