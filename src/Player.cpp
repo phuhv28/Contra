@@ -58,6 +58,7 @@ void Player::removeBullet(int index)
     {
         if (bullet[index] != NULL)
         {
+            bullet[index]->free();
             delete bullet[index];
             bullet.erase(bullet.begin() + index);
         }

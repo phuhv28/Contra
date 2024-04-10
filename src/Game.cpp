@@ -124,6 +124,15 @@ void Game::removeEnemy(int index)
     }
 }
 
+void Game::handleEnemy()
+{
+    for (int i = 0; i < enemyList.size(); i++)
+    {
+        if (enemyList[i]->getX() < camera.x || enemyList[i]->getY() < 0 || enemyList[i]->getY() > SCREEN_HEIGHT)
+            removeEnemy(i);
+    }
+}
+
 // Copy Lazyfoo
 bool Game::checkCol(const SDL_Rect &a, const SDL_Rect &b)
 {
@@ -210,6 +219,56 @@ void Game::handleCol()
     }
 }
 
+void Game::renderSplashScreen()
+{
+    SDL_Texture *texture = NULL;
+
+    SDL_Surface *loadedSurface = IMG_Load("res/splashscreen.png");
+    texture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+
+    SDL_FreeSurface(loadedSurface);
+
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, texture, NULL, NULL);
+    SDL_RenderPresent(renderer);
+    bool quit = false;
+    while (!quit)
+    {
+        while (SDL_PollEvent(&e) != 0)
+        {
+            if (e.type == SDL_KEYDOWN)
+            {
+                quit = true;
+            }
+        }
+    }
+}
+
+void Game::renderGameOver()
+{
+    SDL_Texture *texture = NULL;
+
+    SDL_Surface *loadedSurface = IMG_Load("res/gameover.png");
+    texture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+
+    SDL_FreeSurface(loadedSurface);
+
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, texture, NULL, NULL);
+    SDL_RenderPresent(renderer);
+    bool quit = false;
+    while (!quit)
+    {
+        while (SDL_PollEvent(&e) != 0)
+        {
+            if (e.type == SDL_QUIT)
+            {
+                quit = true;
+            }
+        }
+    }
+}
+
 void Game::renderGamePlay()
 {
     player.handleInputQueue(e, renderer);
@@ -229,6 +288,7 @@ void Game::renderGamePlay()
     setCamera();
     backGround.render(renderer, &camera);
     player.handleBullet(renderer);
+    handleEnemy();
     player.show(renderer);
 
     for (int i = 0; i < enemyList.size(); i++)
@@ -272,6 +332,8 @@ void Game::run()
             map.loadMap("map/map.txt");
             player.loadIMG("res/standingR.png", renderer);
 
+            renderSplashScreen();
+
             while (!quit)
             {
                 auto start = CLOCK_NOW();
@@ -295,7 +357,11 @@ void Game::run()
                     SDL_Delay(SCREEN_TICKS_PER_FRAME - elapsedTime.count());
                 }
                 renderGamePlay();
+                if (player.isDead())
+                    break;
             }
+
+            renderGameOver();
         }
     }
 
