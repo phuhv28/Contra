@@ -19,7 +19,7 @@ public:
     void renderGamePlay();
     bool checkCol(const SDL_Rect &a, const SDL_Rect &b);
     void handleEnemy();
-    void removeEnemy(int index);
+    void removeEnemy(int enemyType, int index);
     void renderSplashScreen();
     void renderGameOver();
     void close();

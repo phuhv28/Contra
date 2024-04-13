@@ -82,16 +82,32 @@ std::vector<Enemy2 *> Game::createEnemies2()
     return enemyList2;
 }
 
-void Game::removeEnemy(int index)
+void Game::removeEnemy(int enemyType, int index)
 {
-    int size = enemyList1.size();
-    if (size > 0 && index < size)
+    if (enemyType == 1)
     {
-        if (enemyList1[index] != NULL)
+        int size = enemyList1.size();
+        if (size > 0 && index < size)
         {
-            enemyList1[index]->free();
-            delete enemyList1[index];
-            enemyList1.erase(enemyList1.begin() + index);
+            if (enemyList1[index] != NULL)
+            {
+                enemyList1[index]->free();
+                delete enemyList1[index];
+                enemyList1.erase(enemyList1.begin() + index);
+            }
+        }
+    }
+    else if (enemyType == 2)
+    {
+        int size = enemyList2.size();
+        if (size > 0 && index < size)
+        {
+            if (enemyList2[index] != NULL)
+            {
+                enemyList2[index]->free();
+                delete enemyList2[index];
+                enemyList2.erase(enemyList2.begin() + index);
+            }
         }
     }
 }
@@ -101,7 +117,7 @@ void Game::handleEnemy()
     for (int i = 0; i < enemyList1.size(); i++)
     {
         if (enemyList1[i]->getX() < camera.x || enemyList1[i]->getY() < 0 || enemyList1[i]->getY() > SCREEN_HEIGHT)
-            removeEnemy(i);
+            removeEnemy(1, i);
     }
 }
 
@@ -152,7 +168,7 @@ bool Game::checkCol(const SDL_Rect &a, const SDL_Rect &b)
 
 void Game::handleCol()
 {
-    //Collision player with enemies
+    // Collision player with enemies
 
     for (int i = 0; i < enemyList1.size(); i++)
     {
@@ -186,7 +202,7 @@ void Game::handleCol()
         }
     }
 
-    //Collision player's bullet with enenmies
+    // Collision player's bullet with enenmies
 
     std::vector<Bullet *> bulletList = player.getBullet();
 
@@ -202,7 +218,7 @@ void Game::handleCol()
                     SDL_Rect b = {enemyList1[i]->getX(), enemyList1[i]->getY(), 68, 96};
                     if (checkCol(a, b))
                     {
-                        removeEnemy(i);
+                        removeEnemy(1, i);
                         player.removeBullet(j);
                     }
                 }
@@ -222,7 +238,7 @@ void Game::handleCol()
                     SDL_Rect b = {enemyList2[i]->getX(), enemyList2[i]->getY(), 68, 96};
                     if (checkCol(a, b))
                     {
-                        removeEnemy(i);
+                        removeEnemy(2, i);
                         player.removeBullet(j);
                     }
                 }
