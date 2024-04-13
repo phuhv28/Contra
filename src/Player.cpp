@@ -74,67 +74,67 @@ void Player::show(SDL_Renderer *renderer)
     {
     case Action::DEAD:
         numFrame = 5;
-        loadIMG("res/die.png", renderer);
+        loadIMG("res/img/die.png", renderer);
         break;
     case Action::JUMPING:
         numFrame = 3;
-        loadIMG("res/jump.png", renderer);
+        loadIMG("res/img/jump.png", renderer);
         break;
     case Action::AIM_UP_RIGHT_WHILE_WALKING:
         numFrame = 3;
-        loadIMG("res/up_right_and_walking.png", renderer);
+        loadIMG("res/img/up_right_and_walking.png", renderer);
         break;
     case Action::AIM_UP_LEFT_WHILE_WALKING:
         numFrame = 3;
-        loadIMG("res/up_left_and_walking.png", renderer);
+        loadIMG("res/img/up_left_and_walking.png", renderer);
         break;
     case Action::AIM_DOWN_LEFT_WHILE_WALKING:
         numFrame = 3;
-        loadIMG("res/down_left.png", renderer);
+        loadIMG("res/img/down_left.png", renderer);
         break;
     case Action::AIM_DOWN_RIGHT_WHILE_WALKING:
         numFrame = 3;
-        loadIMG("res/down_right.png", renderer);
+        loadIMG("res/img/down_right.png", renderer);
         break;
     case Action::STANDING_LEFT:
         numFrame = 1;
-        loadIMG("res/standingL.png", renderer);
+        loadIMG("res/img/standingL.png", renderer);
         break;
     case Action::STANDING_RIGHT:
         numFrame = 1;
-        loadIMG("res/standingR.png", renderer);
+        loadIMG("res/img/standingR.png", renderer);
         break;
     case Action::WALKING_LEFT:
         numFrame = 3;
-        loadIMG("res/walkingL.png", renderer);
+        loadIMG("res/img/walkingL.png", renderer);
         break;
     case Action::WALKING_RIGHT:
         numFrame = 3;
-        loadIMG("res/walkingR.png", renderer);
+        loadIMG("res/img/walkingR.png", renderer);
         break;
     case Action::LAYING_DOWN_LEFT:
         numFrame = 1;
-        loadIMG("res/laydownL.png", renderer);
+        loadIMG("res/img/laydownL.png", renderer);
         break;
     case Action::LAYING_DOWN_RIGHT:
         numFrame = 1;
-        loadIMG("res/laydownR.png", renderer);
+        loadIMG("res/img/laydownR.png", renderer);
         break;
     case Action::AIM_UP_RIGHT:
         numFrame = 1;
-        loadIMG("res/upR.png", renderer);
+        loadIMG("res/img/upR.png", renderer);
         break;
     case Action::AIM_UP_LEFT:
         numFrame = 1;
-        loadIMG("res/upL.png", renderer);
+        loadIMG("res/img/upL.png", renderer);
         break;
     case Action::AIM_RIGHT_WHILE_WALKING:
         numFrame = 3;
-        loadIMG("res/firing_while_walkingR.png", renderer);
+        loadIMG("res/img/firing_while_walkingR.png", renderer);
         break;
     case Action::AIM_LEFT_WHILE_WALKING:
         numFrame = 3;
-        loadIMG("res/firing_while_walkingL.png", renderer);
+        loadIMG("res/img/firing_while_walkingL.png", renderer);
         break;
     }
 
@@ -496,7 +496,7 @@ void Player::createBullet(SDL_Renderer *renderer)
 {
     // std::cout << "VelX: " << VelX << std::endl;
     Bullet *newBullet = new Bullet();
-    newBullet->loadIMG("res/bullet.png", renderer);
+    newBullet->loadIMG("res/img/bullet.png", renderer);
 
     // set start of bullet
     // std::cout << x << " : " << y << std::endl;
@@ -515,27 +515,27 @@ void Player::createBullet(SDL_Renderer *renderer)
     }
     else if (status.action == Action::AIM_DOWN_LEFT_WHILE_WALKING)
     {
-        newBullet->setPos(x + BULLET_SPEED * cos(M_PI * 1 / 8), y - BULLET_SPEED * sin(M_PI * 7 / 8) + 67);
-        newBullet->setVelX(-BULLET_SPEED * cos(M_PI * 1 / 8));
-        newBullet->setVelY(BULLET_SPEED * sin(M_PI * 7 / 8));
+        newBullet->setPos(x + BULLET_SPEED * cos(M_PI * 1 / 5), y - BULLET_SPEED * sin(M_PI * 1 / 5) + 67);
+        newBullet->setVelX(-BULLET_SPEED * cos(M_PI * 1 / 5));
+        newBullet->setVelY(BULLET_SPEED * sin(M_PI * 1 / 5));
     }
     else if (status.action == Action::AIM_DOWN_RIGHT_WHILE_WALKING)
     {
-        newBullet->setPos(x + 69 - BULLET_SPEED * cos(M_PI * 1 / 8), y - BULLET_SPEED * sin(M_PI * 7 / 8) + 67);
-        newBullet->setVelX(BULLET_SPEED * cos(M_PI * 1 / 8));
-        newBullet->setVelY(BULLET_SPEED * sin(M_PI * 7 / 8));
+        newBullet->setPos(x + 69 - BULLET_SPEED * cos(M_PI * 1 / 5), y - BULLET_SPEED * sin(M_PI * 1 / 5) + 67);
+        newBullet->setVelX(BULLET_SPEED * cos(M_PI * 1 / 5));
+        newBullet->setVelY(BULLET_SPEED * sin(M_PI * 1 / 5));
     }
     else if (status.action == Action::AIM_UP_LEFT_WHILE_WALKING)
     {
-        newBullet->setPos(x + BULLET_SPEED * cos(M_PI * 1 / 8), y + BULLET_SPEED * sin(M_PI * 7 / 8) + 3);
-        newBullet->setVelX(-BULLET_SPEED * cos(M_PI * 1 / 8));
-        newBullet->setVelY(-BULLET_SPEED * sin(M_PI * 7 / 8));
+        newBullet->setPos(x + BULLET_SPEED * cos(M_PI * 1 / 5), y + BULLET_SPEED * sin(M_PI * 1 / 5) + 3);
+        newBullet->setVelX(-BULLET_SPEED * cos(M_PI * 1 / 5));
+        newBullet->setVelY(-BULLET_SPEED * sin(M_PI * 1 / 5));
     }
     else if (status.action == Action::AIM_UP_RIGHT_WHILE_WALKING)
     {
-        newBullet->setPos(x + 63 - BULLET_SPEED * cos(M_PI * 1 / 8), y + BULLET_SPEED * sin(M_PI * 7 / 8) + 3);
-        newBullet->setVelX(BULLET_SPEED * cos(M_PI * 1 / 8));
-        newBullet->setVelY(-BULLET_SPEED * sin(M_PI * 7 / 8));
+        newBullet->setPos(x + 63 - BULLET_SPEED * cos(M_PI * 1 / 5), y + BULLET_SPEED * sin(M_PI * 1 / 5) + 3);
+        newBullet->setVelX(BULLET_SPEED * cos(M_PI * 1 / 5));
+        newBullet->setVelY(-BULLET_SPEED * sin(M_PI * 1 / 5));
     }
     else if (status.action == Action::AIM_UP_LEFT)
     {

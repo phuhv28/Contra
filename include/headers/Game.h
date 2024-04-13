@@ -10,9 +10,8 @@
 class Game
 {
 public:
-    Game();
+    Game(SDL_Renderer *renderer, SDL_Window *window);
     ~Game();
-    bool init();
     void setCamera();
     std::vector<Enemy1 *> createEnemies1();
     std::vector<Enemy2 *> createEnemies2();

@@ -20,46 +20,20 @@ void Object::setRect(int x, int y)
 
 bool Object::loadIMG(std::string path, SDL_Renderer *renderer)
 {
-    SDL_Texture *newTexture = NULL;
-
-    SDL_Surface *loadedSurface = IMG_Load(path.c_str());
-    if (loadedSurface == NULL)
-    {
-        std::cout << "Unable to load image! " << path << "SDL_image Error: \n"
-                  << IMG_GetError();
-    }
-    else
-    {
-        newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
-        if (newTexture == NULL)
-        {
-            std::cout << "Unable to create texture from " << path << "SDL Error:\n"
-                      << SDL_GetError();
-        }
-        else
-        {
-            rect.w = loadedSurface->w;
-            rect.h = loadedSurface->h;
-        }
-
-        SDL_FreeSurface(loadedSurface);
-    }
-
-    texture = newTexture;
-
+    texture = IMG_LoadTexture(renderer, path.c_str());
+    SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
     return texture != NULL;
 }
 
 void Object::render(SDL_Renderer *renderer, const SDL_Rect *clip)
 {
-	SDL_Rect renderQuad = rect;
+    SDL_Rect renderQuad = rect;
 
     if (clip != NULL)
     {
         renderQuad.w = clip->w;
-		renderQuad.h = clip->h;
+        renderQuad.h = clip->h;
     }
-
 
     SDL_RenderCopy(renderer, texture, clip, &renderQuad);
 }

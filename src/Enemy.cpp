@@ -45,7 +45,7 @@ void Enemy1::show(SDL_Renderer *renderer, const SDL_Rect &camera)
 {
     if (camera.x > x - SCREEN_WIDTH)
     {
-        loadIMG("res/enemy1.png", renderer);
+        loadIMG("res/img/enemy1.png", renderer);
 
         aCurFrame++;
         if (aCurFrame >= numFrame * SLOWMOTION_ANIMATION_RATE)
@@ -137,7 +137,7 @@ void Enemy2::show(SDL_Renderer *renderer, const SDL_Rect &camera)
 {
     if (camera.x > x - SCREEN_WIDTH)
     {
-        loadIMG("res/enemy2.png", renderer);
+        loadIMG("res/img/enemy2.png", renderer);
         curFrame = (int)status;
 
         rect.x = x - camera.x;
@@ -187,7 +187,7 @@ void Enemy2::chooseStatus(int playerX, int playerY)
 void Enemy2::createBullet(int playerX, int playerY, SDL_Renderer *renderer)
 {
     Bullet *newBullet = new Bullet();
-    newBullet->loadIMG("res/bullet.png", renderer);
+    newBullet->loadIMG("res/img/bullet.png", renderer);
 
     if (status == Enemy1Action::AIM_LEFT)
     {

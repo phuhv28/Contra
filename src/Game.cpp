@@ -1,70 +1,24 @@
 #include "Game.h"
 
-Game::Game()
+Game::Game(SDL_Renderer *renderer, SDL_Window *window)
 {
-    window = nullptr;
-    renderer = nullptr;
+    this->renderer = renderer;
+    this->window = window;
     camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+    backGround.loadIMG("res/img/background.png", renderer);
+    player.setCam(camera);
+    enemyList1 = createEnemies1();
+    enemyList2 = createEnemies2();
+    title = Mix_LoadWAV("res/sound/title.wav");
+    fireSound = Mix_LoadWAV("res/sound/rifle.wav");
+    gMusic = Mix_LoadMUS("res/sound/music.wav");
+    map.loadMap("map/map.txt");
+    player.loadIMG("res/img/standingR.png", renderer);
+    gameOver = Mix_LoadMUS("res/sound/game_over.wav");
 }
 
 Game::~Game()
 {
-}
-
-bool Game::init()
-{
-    bool success = true;
-
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
-    {
-        std::cout << "SDL could not initialize! SDL Error:\n"
-                  << SDL_GetError();
-        success = false;
-    }
-    else
-    {
-        if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
-        {
-            std::cout << "Warning: Linear texture filtering not enabled!";
-        }
-
-        window = SDL_CreateWindow("Contra", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-        if (window == NULL)
-        {
-            std::cout << "Window could not be created! SDL Error: \n"
-                      << SDL_GetError();
-            success = false;
-        }
-        else
-        {
-            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-            if (renderer == NULL)
-            {
-                std::cout << "Renderer could not be created! SDL Error:\n"
-                          << SDL_GetError();
-                success = false;
-            }
-            else
-            {
-                SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-
-                int imgFlags = IMG_INIT_PNG;
-                if (!(IMG_Init(imgFlags) & imgFlags))
-                {
-                    std::cout << "SDL_image could not initialize! SDL_image Error:\n"
-                              << IMG_GetError();
-                    success = false;
-                }
-                // Initialize SDL_mixer
-                if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
-                {
-                    printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
-                }
-            }
-        }
-    }
-
-    return success;
 }
 
 void Game::setCamera()
@@ -198,6 +152,8 @@ bool Game::checkCol(const SDL_Rect &a, const SDL_Rect &b)
 
 void Game::handleCol()
 {
+    //Collision player with enemies
+
     for (int i = 0; i < enemyList1.size(); i++)
     {
         if (enemyList1[i] != NULL)
@@ -213,6 +169,24 @@ void Game::handleCol()
             }
         }
     }
+
+    for (int i = 0; i < enemyList2.size(); i++)
+    {
+        if (enemyList2[i] != NULL)
+        {
+            SDL_Rect a = {enemyList2[i]->getX(), enemyList2[i]->getY(), 68, 96};
+            // std:: cout << a.x << " " << a.y << " " << a.w << " " << a.h << std::endl;
+            SDL_Rect b = {player.getX(), player.getY(), player.getFrameW(), player.getFrameH()};
+            // std:: cout << b.x << " " << b.y << " " << b.w << " " << b.h << std::endl;
+            if (checkCol(a, b))
+            {
+                if (!player.isDead())
+                    player.setDied();
+            }
+        }
+    }
+
+    //Collision player's bullet with enenmies
 
     std::vector<Bullet *> bulletList = player.getBullet();
 
@@ -235,15 +209,35 @@ void Game::handleCol()
             }
         }
     }
+
+    for (int i = 0; i < enemyList2.size(); i++)
+    {
+        if (enemyList2[i] != NULL)
+        {
+            for (int j = 0; j < bulletList.size(); j++)
+            {
+                if (bulletList[j] != NULL)
+                {
+                    SDL_Rect a = {bulletList[j]->getX(), bulletList[j]->getY(), 10, 10};
+                    SDL_Rect b = {enemyList2[i]->getX(), enemyList2[i]->getY(), 68, 96};
+                    if (checkCol(a, b))
+                    {
+                        removeEnemy(i);
+                        player.removeBullet(j);
+                    }
+                }
+            }
+        }
+    }
 }
 
 void Game::renderSplashScreen()
 {
     Mix_PlayChannel(-1, title, 0);
-    SDL_Texture *texture = IMG_LoadTexture(renderer, "res/splashscreen.png");
+    SDL_Texture *texture = IMG_LoadTexture(renderer, "res/img/splashscreen.png");
 
     SDL_Rect icon = {0, 0, 36, 20};
-    SDL_Texture *iconTexture = IMG_LoadTexture(renderer, "res/icon1.png");
+    SDL_Texture *iconTexture = IMG_LoadTexture(renderer, "res/img/icon1.png");
 
     bool quit = false;
     int option = 0;
@@ -304,14 +298,8 @@ void Game::renderGameOver()
         Mix_PauseMusic();
     }
 
-    gameOver = Mix_LoadMUS("res/game_over.wav");
     Mix_PlayMusic(gameOver, 0);
-    SDL_Texture *texture = NULL;
-
-    SDL_Surface *loadedSurface = IMG_Load("res/gameover.png");
-    texture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
-
-    SDL_FreeSurface(loadedSurface);
+    SDL_Texture *texture = IMG_LoadTexture(renderer, "res/img/gameover.png");
 
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -395,70 +383,40 @@ void Game::close()
 
 void Game::run()
 {
-    if (!init())
+    bool quit = false;
+    renderSplashScreen();
+
+    Mix_Pause(-1);
+    Mix_FreeChunk(title);
+    Mix_PlayMusic(gMusic, -1);
+    while (!quit)
     {
-        std::cout << "Failed to initialize!\n";
-    }
-    else
-    {
-        if (!backGround.loadIMG("res/background.png", renderer))
+        auto start = CLOCK_NOW();
+        while (SDL_PollEvent(&e) != 0)
         {
-            std::cout << "Failed to load media!\n";
-        }
-        else
-        {
-            bool quit = false;
-
-            player.setCam(camera);
-            enemyList1 = createEnemies1();
-            enemyList2 = createEnemies2();
-            title = Mix_LoadWAV("res/title.wav");
-            fireSound = Mix_LoadWAV("res/rifle.wav");
-
-            if (title == NULL)
+            if (e.type == SDL_QUIT)
             {
-                printf("Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError());
-            }
-            gMusic = Mix_LoadMUS("res/music.wav");
-
-            map.loadMap("map/map.txt");
-            player.loadIMG("res/standingR.png", renderer);
-
-            renderSplashScreen();
-
-            Mix_Pause(-1);
-            Mix_FreeChunk(title);
-            Mix_PlayMusic(gMusic, -1);
-            while (!quit)
-            {
-                auto start = CLOCK_NOW();
-                while (SDL_PollEvent(&e) != 0)
-                {
-                    if (e.type == SDL_QUIT)
-                    {
-                        quit = true;
-                    }
-
-                    player.getInput(e, renderer, fireSound);
-                }
-
-                auto end = CLOCK_NOW();
-
-                ElapsedTime elapsedTime = end - start;
-                // std::cout << elapsedTime.count() << " ";
-
-                if (elapsedTime.count() < SCREEN_TICKS_PER_FRAME)
-                {
-                    SDL_Delay(SCREEN_TICKS_PER_FRAME - elapsedTime.count());
-                }
-                renderGamePlay();
-                if (player.isDead())
-                    break;
+                quit = true;
             }
 
-            renderGameOver();
+            player.getInput(e, renderer, fireSound);
         }
+
+        auto end = CLOCK_NOW();
+
+        ElapsedTime elapsedTime = end - start;
+        // std::cout << elapsedTime.count() << " ";
+
+        if (elapsedTime.count() < SCREEN_TICKS_PER_FRAME)
+        {
+            SDL_Delay(SCREEN_TICKS_PER_FRAME - elapsedTime.count());
+        }
+        renderGamePlay();
+        if (player.isDead())
+            break;
     }
+
+    renderGameOver();
 
     close();
 }
