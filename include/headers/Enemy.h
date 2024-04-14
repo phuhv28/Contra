@@ -21,20 +21,13 @@ class Enemy1 : public Object
 public:
     Enemy1();
     ~Enemy1();
-    bool loadIMG(std::string path);
+    void loadIMG(std::string path);
     void show();
     void action(Map map);
-    void setX( int x_ ) { x = x_; }
-    void setY( int y_ ) { y = y_; }
-    int getX() { return x; }
-    int getY() { return y; }
+
 
 private:
-    // const SDL_Rect *camera;
-    // Player *player;
 
-    int VelX, VelY;
-    int x, y;
     int numFrame;
     SDL_Rect frameClip[6];
     int frameW;
@@ -49,23 +42,15 @@ class Enemy2 : public Object
 public:
     Enemy2();
     ~Enemy2();
-    bool loadIMG(std::string path);
+    void loadIMG(std::string path);
     void show();
     void action(Map map, int playerX, int playerY);
     void chooseStatus(int playerX, int playerY);
     void createBullet(int playerX, int playerY);
     void handleBullet();
-    void setX( int x_ ) { x = x_; }
-    void setY( int y_ ) { y = y_; }
-    int getX() { return x; }
-    int getY() { return y; }
 
 private:
-    // const SDL_Rect *camera;
-    // Player *player;
     Enemy1Action status;
-    int VelX, VelY;
-    int x, y;
     int numFrame;
     SDL_Rect frameClip[6];
     int frameW;

@@ -2,10 +2,6 @@
 
 Bullet::Bullet()
 {
-    x = 0;
-    y = 0;
-    VelX = 0;
-    VelY = 0;
     onScreen = false;
 }
 

@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Map.h"
+#include "Explosion.h"
 
 class Game
 {
@@ -41,6 +42,7 @@ private:
     // The sound effects that will be used
     Mix_Chunk *title = NULL;
     Mix_Chunk *fireSound = NULL;
+    Explosion x;
 };
 
 #endif

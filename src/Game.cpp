@@ -14,6 +14,7 @@ Game::Game(SDL_Renderer *renderer, SDL_Window *window)
     map.loadMap("map/map.txt");
     player.loadIMG("res/img/standingR.png");
     gameOver = Mix_LoadMUS("res/sound/game_over.wav");
+    x.loadIMG("res/img/explosion.png");
 }
 
 Game::~Game()
@@ -409,6 +410,9 @@ void Game::renderGamePlay()
 
     handleEnemy();
     player.show();
+    
+    x.setPos(player.getX(), player.getY());
+    x.render();
 
     for (int i = 0; i < enemyList1.size(); i++)
     {

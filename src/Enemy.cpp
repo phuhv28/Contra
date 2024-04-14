@@ -19,13 +19,11 @@ Enemy1::~Enemy1()
 {
 }
 
-bool Enemy1::loadIMG(std::string path)
+void Enemy1::loadIMG(std::string path)
 {
     free();
 
-    bool flag = Object::loadIMG(path);
-    if (!flag)
-        std::cout << "Error";
+    Object::loadIMG(path);
 
     frameW = rect.w / numFrame;
     frameH = rect.h;
@@ -37,8 +35,6 @@ bool Enemy1::loadIMG(std::string path)
         frameClip[i].w = frameW;
         frameClip[i].h = frameH;
     }
-
-    return flag;
 }
 
 void Enemy1::show()
@@ -111,13 +107,11 @@ Enemy2::~Enemy2()
 {
 }
 
-bool Enemy2::loadIMG(std::string path)
+void Enemy2::loadIMG(std::string path)
 {
     free();
 
-    bool flag = Object::loadIMG(path);
-    if (!flag)
-        std::cout << "Error!";
+    Object::loadIMG(path);
 
     frameW = rect.w / numFrame;
     frameH = rect.h;
@@ -129,8 +123,6 @@ bool Enemy2::loadIMG(std::string path)
         frameClip[i].w = frameW;
         frameClip[i].h = frameH;
     }
-
-    return flag;
 }
 
 void Enemy2::show()

@@ -6,23 +6,28 @@ SDL_Renderer *Object::renderer = nullptr;
 Object::Object()
 {
     rect = {0, 0, 0, 0};
+    x = 0;
+    y = 0;
+    VelX = 0;
+    VelY = 0;
 }
 
 Object::~Object()
 {
 }
 
-void Object::setRect(int x, int y)
+void Object::setRect(int x_, int y_)
 {
-    rect.x = x;
-    rect.y = y;
+    rect.x = x_;
+    rect.y = y_;
 }
 
-bool Object::loadIMG(std::string path)
+void Object::loadIMG(std::string path)
 {
     texture = IMG_LoadTexture(renderer, path.c_str());
     SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
-    return texture != NULL;
+    if (texture == NULL)
+        std::cout << SDL_GetError() << std::endl;
 }
 
 void Object::render(const SDL_Rect *clip)

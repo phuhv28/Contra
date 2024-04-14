@@ -59,27 +59,22 @@ public:
     Player();
     ~Player();
 
-    bool loadIMG(std::string path);
+    void loadIMG(std::string path);
     void show();
     void getInput(SDL_Event e, Mix_Chunk *fireSound);
     void handleInputQueue(SDL_Event e);
     void action(Map map);
-    int getX() { return x; }
-    int getY() { return y; }
     int getFrameW() { return frameW; }
     int getFrameH() { return frameH; }
     void setBullet(std::vector<Bullet*> bulletList) { bullet = bulletList; }
     std::vector<Bullet*> getBullet() const { return bullet; }
     void createBullet();
     void handleBullet();
-    void setCam(const SDL_Rect &camera);
     void setDied() { status.action = Action::DEAD; }
     bool isDead() { return status.action == Action::DEAD; }
     void removeBullet(int index);
 
 private:
-    int VelX, VelY;
-    int x, y;
     int frameW, frameH;
     int numFrame;
     SDL_Rect frameClip[MAX_NUM_FRAME];

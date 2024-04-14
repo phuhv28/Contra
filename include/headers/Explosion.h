@@ -7,7 +7,6 @@
 class Explosion : public Object
 {
 private:
-    int x, y;
     SDL_Rect frameClip[3];
     int timer;
     int aCurFrame;
@@ -19,7 +18,6 @@ public:
     Explosion();
     ~Explosion();
     void setPos(int x, int y) { this->x = x; this->y = y; }
-    void action();
     void render();
 };
 

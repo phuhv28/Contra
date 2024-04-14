@@ -25,13 +25,11 @@ Player::~Player()
 }
 
 
-bool Player::loadIMG(std::string path)
+void Player::loadIMG(std::string path)
 {
     free();
 
-    bool flag = Object::loadIMG(path);
-    if (!flag)
-        std::cout << "Error!" << SDL_GetError();
+    Object::loadIMG(path);
 
     frameW = rect.w / numFrame;
     frameH = rect.h;
@@ -43,8 +41,6 @@ bool Player::loadIMG(std::string path)
         frameClip[i].w = frameW;
         frameClip[i].h = frameH;
     }
-
-    return flag;
 }
 
 void Player::removeBullet(int index)

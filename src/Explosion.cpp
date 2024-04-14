@@ -2,7 +2,6 @@
 
 Explosion::Explosion()
 {
-    loadIMG("res/img/explosion.png");
     for (int i = 0; i < 3; i++)
     {
         frameClip[i].x = i * 90;
@@ -10,39 +9,33 @@ Explosion::Explosion()
         frameClip[i].w = 90;
         frameClip[i].h = 90;
     }
-    x = 0;
-    y = 0;
     timer = 0;
     aCurFrame = 0;
     curFrame = 0;
     done = false;
+    // loadIMG("res/img/explosion.png");
+    // if (texture == NULL)
+    //     std::cout << "Error";
+    // std::cout << 100;
 }
 
 Explosion::~Explosion()
 {
 }
 
-void Explosion::action()
-{
-}
-
 void Explosion::render()
 {
+    aCurFrame++;
+    curFrame = aCurFrame / SLOWMOTION_ANIMATION_RATE;
+    if (curFrame >= 3)
+    {
+        aCurFrame = 0;
+    }
     if (!done)
     {
-        aCurFrame++;
-        curFrame = aCurFrame / SLOWMOTION_ANIMATION_RATE;
-
+        // if (texture == NULL)
+        //     std::cout << "Error";
         SDL_Rect *curClip = &frameClip[curFrame];
-
-        if (x < Object::camera.x)
-            x = Object::camera.x;
-        if (x > Object::camera.x + SCREEN_WIDTH)
-            x = Object::camera.x + SCREEN_WIDTH;
-        if (y < Object::camera.y)
-            y = Object::camera.y;
-        if (y > Object::camera.y + SCREEN_HEIGHT)
-            y = Object::camera.y + SCREEN_HEIGHT;
 
         rect.x = x - Object::camera.x;
         rect.y = y - Object::camera.y;
@@ -50,5 +43,6 @@ void Explosion::render()
         SDL_Rect renderQuad = {rect.x, rect.y, 90, 90};
 
         SDL_RenderCopy(renderer, texture, curClip, &renderQuad);
+        // std::cout << curFrame << " ";
     }
 }
