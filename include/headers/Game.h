@@ -29,7 +29,6 @@ private:
     SDL_Window *window;
     SDL_Renderer *renderer;
     Object backGround;
-    SDL_Rect camera;
     Player player;
     GameMap map;
     SDL_Event e;

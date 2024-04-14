@@ -59,10 +59,10 @@ public:
     Player();
     ~Player();
 
-    bool loadIMG(std::string path, SDL_Renderer *renderer);
-    void show(SDL_Renderer *renderer);
-    void getInput(SDL_Event e, SDL_Renderer *renderer, Mix_Chunk *fireSound);
-    void handleInputQueue(SDL_Event e, SDL_Renderer *renderer);
+    bool loadIMG(std::string path);
+    void show();
+    void getInput(SDL_Event e, Mix_Chunk *fireSound);
+    void handleInputQueue(SDL_Event e);
     void action(Map map);
     int getX() { return x; }
     int getY() { return y; }
@@ -70,15 +70,14 @@ public:
     int getFrameH() { return frameH; }
     void setBullet(std::vector<Bullet*> bulletList) { bullet = bulletList; }
     std::vector<Bullet*> getBullet() const { return bullet; }
-    void createBullet(SDL_Renderer *renderer);
-    void handleBullet(SDL_Renderer *renderer);
+    void createBullet();
+    void handleBullet();
     void setCam(const SDL_Rect &camera);
     void setDied() { status.action = Action::DEAD; }
     bool isDead() { return status.action == Action::DEAD; }
     void removeBullet(int index);
 
 private:
-    const SDL_Rect *camera;
     int VelX, VelY;
     int x, y;
     int frameW, frameH;

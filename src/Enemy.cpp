@@ -19,13 +19,13 @@ Enemy1::~Enemy1()
 {
 }
 
-bool Enemy1::loadIMG(std::string path, SDL_Renderer *renderer)
+bool Enemy1::loadIMG(std::string path)
 {
     free();
 
-    bool flag = Object::loadIMG(path, renderer);
+    bool flag = Object::loadIMG(path);
     if (!flag)
-        std::cout << "Error!";
+        std::cout << "Error";
 
     frameW = rect.w / numFrame;
     frameH = rect.h;
@@ -41,11 +41,11 @@ bool Enemy1::loadIMG(std::string path, SDL_Renderer *renderer)
     return flag;
 }
 
-void Enemy1::show(SDL_Renderer *renderer, const SDL_Rect &camera)
+void Enemy1::show()
 {
     if (camera.x > x - SCREEN_WIDTH)
     {
-        loadIMG("res/img/enemy1.png", renderer);
+        loadIMG("res/img/enemy1.png");
 
         aCurFrame++;
         if (aCurFrame >= numFrame * SLOWMOTION_ANIMATION_RATE)
@@ -64,7 +64,7 @@ void Enemy1::show(SDL_Renderer *renderer, const SDL_Rect &camera)
     }
 }
 
-void Enemy1::action(Map map, const SDL_Rect &camera)
+void Enemy1::action(Map map)
 {
     if (camera.x > x - SCREEN_WIDTH)
     {
@@ -72,8 +72,8 @@ void Enemy1::action(Map map, const SDL_Rect &camera)
         int x2 = x1 + frameW;
         int y1 = y + VelY;
         int y2 = y1 + frameH;
-        if ((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 1 ||
-             map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 1) &&
+        if ((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] != 0 ||
+             map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] != 0) &&
             VelY >= 0)
         {
             y = y2 / TILE_SIZE * TILE_SIZE - frameH + 15;
@@ -82,7 +82,7 @@ void Enemy1::action(Map map, const SDL_Rect &camera)
         }
 
         if (VelY == 0 && onGround == true &&
-            (map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] != 1 && map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] != 1))
+            (map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 0 && map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 0))
         {
             VelY = GRAVITY;
             onGround = false;
@@ -104,18 +104,18 @@ Enemy2::Enemy2()
     frameH = 0;
     frameW = 0;
     status = Enemy1Action::AIM_LEFT;
-    // this->player = player;
+    timer = 0;
 }
 
 Enemy2::~Enemy2()
 {
 }
 
-bool Enemy2::loadIMG(std::string path, SDL_Renderer *renderer)
+bool Enemy2::loadIMG(std::string path)
 {
     free();
 
-    bool flag = Object::loadIMG(path, renderer);
+    bool flag = Object::loadIMG(path);
     if (!flag)
         std::cout << "Error!";
 
@@ -133,11 +133,11 @@ bool Enemy2::loadIMG(std::string path, SDL_Renderer *renderer)
     return flag;
 }
 
-void Enemy2::show(SDL_Renderer *renderer, const SDL_Rect &camera)
+void Enemy2::show()
 {
     if (camera.x > x - SCREEN_WIDTH)
     {
-        loadIMG("res/img/enemy2.png", renderer);
+        loadIMG("res/img/enemy2.png");
         curFrame = (int)status;
 
         rect.x = x - camera.x;
@@ -184,10 +184,10 @@ void Enemy2::chooseStatus(int playerX, int playerY)
     }
 }
 
-void Enemy2::createBullet(int playerX, int playerY, SDL_Renderer *renderer)
+void Enemy2::createBullet(int playerX, int playerY)
 {
     Bullet *newBullet = new Bullet();
-    newBullet->loadIMG("res/img/bullet.png", renderer);
+    newBullet->loadIMG("res/img/bullet.png");
 
     if (status == Enemy1Action::AIM_LEFT)
     {
@@ -223,7 +223,7 @@ void Enemy2::createBullet(int playerX, int playerY, SDL_Renderer *renderer)
     bulletList.push_back(newBullet);
 }
 
-void Enemy2::handleBullet(SDL_Renderer *renderer, const SDL_Rect& camera)
+void Enemy2::handleBullet()
 {
     for (int i = 0; i < bulletList.size(); i++)
     {
@@ -231,8 +231,8 @@ void Enemy2::handleBullet(SDL_Renderer *renderer, const SDL_Rect& camera)
         {
             if (bulletList[i]->getOnScreen() == true)
             {
-                bulletList[i]->move(&camera);
-                bulletList[i]->renderBullet(renderer, &camera);
+                bulletList[i]->move();
+                bulletList[i]->renderBullet();
             }
             else
             {
@@ -244,12 +244,16 @@ void Enemy2::handleBullet(SDL_Renderer *renderer, const SDL_Rect& camera)
     }
 }
 
-void Enemy2::action(Map map, const SDL_Rect &camera, int playerX, int playerY, SDL_Renderer *renderer)
+void Enemy2::action(Map map, int playerX, int playerY)
 {
     if (camera.x > x - SCREEN_WIDTH)
     {
+        if (timer > 30)
+            timer = 0;
         chooseStatus(playerX, playerY);
-        createBullet(playerX, playerY, renderer);
-        handleBullet(renderer, camera);
+        if (timer == 0 || timer == 3 || timer == 6)
+            createBullet(playerX, playerY);
+        handleBullet();
+        timer++;
     }
 }

@@ -62,6 +62,7 @@ bool init()
 int main(int argc, char *argv[])
 {
     init();
+
     Game game(renderer, window);
 
     game.run();

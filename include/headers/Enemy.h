@@ -21,9 +21,9 @@ class Enemy1 : public Object
 public:
     Enemy1();
     ~Enemy1();
-    bool loadIMG(std::string path, SDL_Renderer *renderer);
-    void show(SDL_Renderer *renderer, const SDL_Rect &camera);
-    void action(Map map, const SDL_Rect &camera);
+    bool loadIMG(std::string path);
+    void show();
+    void action(Map map);
     void setX( int x_ ) { x = x_; }
     void setY( int y_ ) { y = y_; }
     int getX() { return x; }
@@ -49,12 +49,12 @@ class Enemy2 : public Object
 public:
     Enemy2();
     ~Enemy2();
-    bool loadIMG(std::string path, SDL_Renderer *renderer);
-    void show(SDL_Renderer *renderer, const SDL_Rect &camera);
-    void action(Map map, const SDL_Rect &camera, int playerX, int playerY, SDL_Renderer *renderer);
+    bool loadIMG(std::string path);
+    void show();
+    void action(Map map, int playerX, int playerY);
     void chooseStatus(int playerX, int playerY);
-    void createBullet(int playerX, int playerY, SDL_Renderer *renderer);
-    void handleBullet(SDL_Renderer *renderer, const SDL_Rect& camera);
+    void createBullet(int playerX, int playerY);
+    void handleBullet();
     void setX( int x_ ) { x = x_; }
     void setY( int y_ ) { y = y_; }
     int getX() { return x; }
@@ -71,7 +71,7 @@ private:
     int frameW;
     int frameH;
     int curFrame;
-    Timer timer;
+    int timer;
 
     std::vector<Bullet*> bulletList;
 };

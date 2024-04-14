@@ -24,19 +24,14 @@ Player::~Player()
 {
 }
 
-void Player::setCam(const SDL_Rect &camera)
-{
-    this->camera = &camera;
-}
 
-
-bool Player::loadIMG(std::string path, SDL_Renderer *renderer)
+bool Player::loadIMG(std::string path)
 {
     free();
 
-    bool flag = Object::loadIMG(path, renderer);
+    bool flag = Object::loadIMG(path);
     if (!flag)
-        std::cout << "Error!";
+        std::cout << "Error!" << SDL_GetError();
 
     frameW = rect.w / numFrame;
     frameH = rect.h;
@@ -67,74 +62,74 @@ void Player::removeBullet(int index)
 }
 
 
-void Player::show(SDL_Renderer *renderer)
+void Player::show()
 {
     // std::cout << x << " " << y << std::endl;
     switch (status.action)
     {
     case Action::DEAD:
         numFrame = 5;
-        loadIMG("res/img/die.png", renderer);
+        loadIMG("res/img/die.png");
         break;
     case Action::JUMPING:
         numFrame = 3;
-        loadIMG("res/img/jump.png", renderer);
+        loadIMG("res/img/jump.png");
         break;
     case Action::AIM_UP_RIGHT_WHILE_WALKING:
         numFrame = 3;
-        loadIMG("res/img/up_right_and_walking.png", renderer);
+        loadIMG("res/img/up_right_and_walking.png");
         break;
     case Action::AIM_UP_LEFT_WHILE_WALKING:
         numFrame = 3;
-        loadIMG("res/img/up_left_and_walking.png", renderer);
+        loadIMG("res/img/up_left_and_walking.png");
         break;
     case Action::AIM_DOWN_LEFT_WHILE_WALKING:
         numFrame = 3;
-        loadIMG("res/img/down_left.png", renderer);
+        loadIMG("res/img/down_left.png");
         break;
     case Action::AIM_DOWN_RIGHT_WHILE_WALKING:
         numFrame = 3;
-        loadIMG("res/img/down_right.png", renderer);
+        loadIMG("res/img/down_right.png");
         break;
     case Action::STANDING_LEFT:
         numFrame = 1;
-        loadIMG("res/img/standingL.png", renderer);
+        loadIMG("res/img/standingL.png");
         break;
     case Action::STANDING_RIGHT:
         numFrame = 1;
-        loadIMG("res/img/standingR.png", renderer);
+        loadIMG("res/img/standingR.png");
         break;
     case Action::WALKING_LEFT:
         numFrame = 3;
-        loadIMG("res/img/walkingL.png", renderer);
+        loadIMG("res/img/walkingL.png");
         break;
     case Action::WALKING_RIGHT:
         numFrame = 3;
-        loadIMG("res/img/walkingR.png", renderer);
+        loadIMG("res/img/walkingR.png");
         break;
     case Action::LAYING_DOWN_LEFT:
         numFrame = 1;
-        loadIMG("res/img/laydownL.png", renderer);
+        loadIMG("res/img/laydownL.png");
         break;
     case Action::LAYING_DOWN_RIGHT:
         numFrame = 1;
-        loadIMG("res/img/laydownR.png", renderer);
+        loadIMG("res/img/laydownR.png");
         break;
     case Action::AIM_UP_RIGHT:
         numFrame = 1;
-        loadIMG("res/img/upR.png", renderer);
+        loadIMG("res/img/upR.png");
         break;
     case Action::AIM_UP_LEFT:
         numFrame = 1;
-        loadIMG("res/img/upL.png", renderer);
+        loadIMG("res/img/upL.png");
         break;
     case Action::AIM_RIGHT_WHILE_WALKING:
         numFrame = 3;
-        loadIMG("res/img/firing_while_walkingR.png", renderer);
+        loadIMG("res/img/firing_while_walkingR.png");
         break;
     case Action::AIM_LEFT_WHILE_WALKING:
         numFrame = 3;
-        loadIMG("res/img/firing_while_walkingL.png", renderer);
+        loadIMG("res/img/firing_while_walkingL.png");
         break;
     }
 
@@ -154,24 +149,24 @@ void Player::show(SDL_Renderer *renderer)
 
     SDL_Rect *curClip = &frameClip[curFrame];
 
-    if (x < camera->x)
-        x = camera->x;
-    if (x > camera->x + SCREEN_WIDTH)
-        x = camera->x + SCREEN_WIDTH;
-    if (y < camera->y)
-        y = camera->y;
-    if (y > camera->y + SCREEN_HEIGHT)
-        y = camera->y + SCREEN_HEIGHT;
+    if (x < Object::camera.x)
+        x = Object::camera.x;
+    if (x > Object::camera.x + SCREEN_WIDTH)
+        x = Object::camera.x + SCREEN_WIDTH;
+    if (y < Object::camera.y)
+        y = Object::camera.y;
+    if (y > Object::camera.y + SCREEN_HEIGHT)
+        y = Object::camera.y + SCREEN_HEIGHT;
 
-    rect.x = x - camera->x;
-    rect.y = y - camera->y;
+    rect.x = x - Object::camera.x;
+    rect.y = y - Object::camera.y;
 
     SDL_Rect renderQuad = {rect.x, rect.y, frameW, frameH};
 
     SDL_RenderCopy(renderer, texture, curClip, &renderQuad);
 }
 
-void Player::getInput(SDL_Event e, SDL_Renderer *renderer, Mix_Chunk *fireSound)
+void Player::getInput(SDL_Event e, Mix_Chunk *fireSound)
 {
     if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
     {
@@ -263,7 +258,7 @@ void Player::getInput(SDL_Event e, SDL_Renderer *renderer, Mix_Chunk *fireSound)
     }
 }
 
-void Player::handleInputQueue(SDL_Event e, SDL_Renderer *renderer)
+void Player::handleInputQueue(SDL_Event e)
 {
     // std::cout << inputQueue.size();
     if ((int)inputQueue.size() != 0)
@@ -438,7 +433,7 @@ void Player::handleInputQueue(SDL_Event e, SDL_Renderer *renderer)
     if (status.isFiring == true)
     {
         status.isFiring = false;
-        createBullet(renderer);
+        createBullet();
     }
 }
 
@@ -454,8 +449,8 @@ void Player::action(Map map)
     int y1 = y + VelY;
     int y2 = y1 + h[(int)status.action];
     // std::cout << std::boolalpha << status.isFalling << " " << status.onGround << std::endl;
-    if ((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 1 ||
-         map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 1) &&
+    if ((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] != 0 ||
+         map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] != 0) &&
         VelY >= 0 && (y + frameClip[curFrame].h) < (y2 / TILE_SIZE * TILE_SIZE) && status.isFalling == false)
     {
         // std::cout << h[(int)status.action] << " ";
@@ -469,7 +464,7 @@ void Player::action(Map map)
 
     // Fall when go out of block 1
     if (VelY == 0 && status.onGround == true &&
-        (map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] != 1 && map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] != 1))
+        (map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 0 && map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 0))
     {
         // std::cout << "X";
         VelY = GRAVITY;
@@ -486,17 +481,17 @@ void Player::action(Map map)
         x = 0;
     if (y < 0 || y > MAX_MAP_Y * TILE_SIZE)
     {
-        x = camera->x + TILE_SIZE / 2;
+        x = Object::camera.x + TILE_SIZE / 2;
         y = TILE_SIZE;
         VelY = GRAVITY;
     }
 }
 
-void Player::createBullet(SDL_Renderer *renderer)
+void Player::createBullet()
 {
     // std::cout << "VelX: " << VelX << std::endl;
     Bullet *newBullet = new Bullet();
-    newBullet->loadIMG("res/img/bullet.png", renderer);
+    newBullet->loadIMG("res/img/bullet.png");
 
     // set start of bullet
     // std::cout << x << " : " << y << std::endl;
@@ -591,7 +586,7 @@ void Player::createBullet(SDL_Renderer *renderer)
     bullet.push_back(newBullet);
 }
 
-void Player::handleBullet(SDL_Renderer *renderer)
+void Player::handleBullet()
 {
     for (int i = 0; i < bullet.size(); i++)
     {
@@ -599,8 +594,8 @@ void Player::handleBullet(SDL_Renderer *renderer)
         {
             if (bullet[i]->getOnScreen() == true)
             {
-                bullet[i]->move(camera);
-                bullet[i]->renderBullet(renderer, camera);
+                bullet[i]->move();
+                bullet[i]->renderBullet();
             }
             else
             {

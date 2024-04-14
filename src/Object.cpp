@@ -1,11 +1,11 @@
 #include "Object.h"
 
+SDL_Rect Object::camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+SDL_Renderer *Object::renderer = nullptr;
+
 Object::Object()
 {
-    rect.x = 0;
-    rect.y = 0;
-    rect.w = 0;
-    rect.h = 0;
+    rect = {0, 0, 0, 0};
 }
 
 Object::~Object()
@@ -18,14 +18,14 @@ void Object::setRect(int x, int y)
     rect.y = y;
 }
 
-bool Object::loadIMG(std::string path, SDL_Renderer *renderer)
+bool Object::loadIMG(std::string path)
 {
     texture = IMG_LoadTexture(renderer, path.c_str());
     SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
     return texture != NULL;
 }
 
-void Object::render(SDL_Renderer *renderer, const SDL_Rect *clip)
+void Object::render(const SDL_Rect *clip)
 {
     SDL_Rect renderQuad = rect;
 

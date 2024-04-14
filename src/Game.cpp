@@ -4,16 +4,15 @@ Game::Game(SDL_Renderer *renderer, SDL_Window *window)
 {
     this->renderer = renderer;
     this->window = window;
-    camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
-    backGround.loadIMG("res/img/background.png", renderer);
-    player.setCam(camera);
+    Object::renderer = this->renderer;
+    backGround.loadIMG("res/img/background.png");
     enemyList1 = createEnemies1();
     enemyList2 = createEnemies2();
     title = Mix_LoadWAV("res/sound/title.wav");
     fireSound = Mix_LoadWAV("res/sound/rifle.wav");
     gMusic = Mix_LoadMUS("res/sound/music.wav");
     map.loadMap("map/map.txt");
-    player.loadIMG("res/img/standingR.png", renderer);
+    player.loadIMG("res/img/standingR.png");
     gameOver = Mix_LoadMUS("res/sound/game_over.wav");
 }
 
@@ -24,25 +23,25 @@ Game::~Game()
 void Game::setCamera()
 {
     int tempX = (player.getX() + player.getFrameW() / 2) - SCREEN_WIDTH / 2;
-    if (tempX > camera.x)
-        camera.x = tempX;
-    camera.y = 0;
+    if (tempX > Object::camera.x)
+        Object::camera.x = tempX;
+    Object::camera.y = 0;
 
-    if (camera.x < 0)
+    if (Object::camera.x < 0)
     {
-        camera.x = 0;
+        Object::camera.x = 0;
     }
-    if (camera.y < 0)
+    if (Object::camera.y < 0)
     {
-        camera.y = 0;
+        Object::camera.y = 0;
     }
-    if (camera.x > MAX_MAP_X * TILE_SIZE - camera.w)
+    if (Object::camera.x > MAX_MAP_X * TILE_SIZE - Object::camera.w)
     {
-        camera.x = MAX_MAP_X * TILE_SIZE - camera.w;
+        Object::camera.x = MAX_MAP_X * TILE_SIZE - Object::camera.w;
     }
-    if (camera.y > MAX_MAP_Y * TILE_SIZE - camera.h)
+    if (Object::camera.y > MAX_MAP_Y * TILE_SIZE - Object::camera.h)
     {
-        camera.y = MAX_MAP_Y * TILE_SIZE - camera.h;
+        Object::camera.y = MAX_MAP_Y * TILE_SIZE - Object::camera.h;
     }
 }
 
@@ -57,15 +56,49 @@ std::vector<Enemy1 *> Game::createEnemies1()
     enemyList1.push_back(pEnemy);
 
     pEnemy = new Enemy1();
-    pEnemy->setX(864);
-    pEnemy->setY(207);
-    enemyList1.push_back(pEnemy);
-
-    pEnemy = new Enemy1();
     pEnemy->setX(960);
     pEnemy->setY(207);
     enemyList1.push_back(pEnemy);
 
+    pEnemy = new Enemy1();
+    pEnemy->setX(1088);
+    pEnemy->setY(207);
+    enemyList1.push_back(pEnemy);
+
+    pEnemy = new Enemy1();
+    pEnemy->setX(1632);
+    pEnemy->setY(207);
+    enemyList1.push_back(pEnemy);
+
+    pEnemy = new Enemy1();
+    pEnemy->setX(1824);
+    pEnemy->setY(207);
+    enemyList1.push_back(pEnemy);
+
+    pEnemy = new Enemy1();
+    pEnemy->setX(2464);
+    pEnemy->setY(207);
+    enemyList1.push_back(pEnemy);
+
+    pEnemy = new Enemy1();
+    pEnemy->setX(2944);
+    pEnemy->setY(207);
+    enemyList1.push_back(pEnemy);
+    
+    pEnemy = new Enemy1();
+    pEnemy->setX(3264);
+    pEnemy->setY(207);
+    enemyList1.push_back(pEnemy);
+
+    pEnemy = new Enemy1();
+    pEnemy->setX(3872);
+    pEnemy->setY(207);
+    enemyList1.push_back(pEnemy);
+
+    pEnemy = new Enemy1();
+    pEnemy->setX(4064);
+    pEnemy->setY(207);
+    enemyList1.push_back(pEnemy);
     return enemyList1;
 }
 
@@ -75,8 +108,18 @@ std::vector<Enemy2 *> Game::createEnemies2()
 
     Enemy2 *pEnemy = new Enemy2();
 
-    pEnemy->setX(960);
+    pEnemy->setX(928);
     pEnemy->setY(474);
+    enemyList2.push_back(pEnemy);
+
+    pEnemy = new Enemy2();
+    pEnemy->setX(1888);
+    pEnemy->setY(474);
+    enemyList2.push_back(pEnemy);
+    
+    pEnemy = new Enemy2();
+    pEnemy->setX(3808);
+    pEnemy->setY(186);
     enemyList2.push_back(pEnemy);
 
     return enemyList2;
@@ -116,7 +159,7 @@ void Game::handleEnemy()
 {
     for (int i = 0; i < enemyList1.size(); i++)
     {
-        if (enemyList1[i]->getX() < camera.x || enemyList1[i]->getY() < 0 || enemyList1[i]->getY() > SCREEN_HEIGHT)
+        if (enemyList1[i]->getX() < Object::camera.x || enemyList1[i]->getY() < 0 || enemyList1[i]->getY() > SCREEN_HEIGHT)
             removeEnemy(1, i);
     }
 }
@@ -335,7 +378,7 @@ void Game::renderGameOver()
 
 void Game::renderGamePlay()
 {
-    player.handleInputQueue(e, renderer);
+    player.handleInputQueue(e);
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(renderer);
 
@@ -343,13 +386,13 @@ void Game::renderGamePlay()
     {
         Enemy1 *pEnemy = enemyList1[i];
         if (pEnemy != NULL)
-            pEnemy->action(map.getMap(), camera);
+            pEnemy->action(map.getMap());
     }
     for (int i = 0; i < enemyList2.size(); i++)
     {
         Enemy2 *pEnemy = enemyList2[i];
         if (pEnemy != NULL)
-            pEnemy->action(map.getMap(), camera, player.getX() + player.getFrameW() / 2, player.getY() + player.getFrameH() / 2, renderer);
+            pEnemy->action(map.getMap(), player.getX() + player.getFrameW() / 2, player.getY() + player.getFrameH() / 2);
     }
     // std::cout << enemyList2.size() << " ";
 
@@ -357,28 +400,28 @@ void Game::renderGamePlay()
     handleCol();
 
     setCamera();
-    backGround.render(renderer, &camera);
-    player.handleBullet(renderer);
+    backGround.render(&Object::camera);
+    player.handleBullet();
     for (int i = 0; i < enemyList2.size(); i++)
     {
-        enemyList2[i]->handleBullet(renderer, camera);
+        enemyList2[i]->handleBullet();
     }
 
     handleEnemy();
-    player.show(renderer);
+    player.show();
 
     for (int i = 0; i < enemyList1.size(); i++)
     {
         Enemy1 *pEnemy = enemyList1[i];
         if (pEnemy != NULL)
-            pEnemy->show(renderer, camera);
+            pEnemy->show();
     }
     for (int i = 0; i < enemyList2.size(); i++)
     {
         Enemy2 *pEnemy = enemyList2[i];
         if (pEnemy != NULL)
         {
-            pEnemy->show(renderer, camera);
+            pEnemy->show();
             // std::cout << 100;
         }
     }
@@ -400,11 +443,13 @@ void Game::close()
 void Game::run()
 {
     bool quit = false;
-    renderSplashScreen();
+    // renderSplashScreen();
 
     Mix_Pause(-1);
     Mix_FreeChunk(title);
     Mix_PlayMusic(gMusic, -1);
+
+    
     while (!quit)
     {
         auto start = CLOCK_NOW();
@@ -415,7 +460,7 @@ void Game::run()
                 quit = true;
             }
 
-            player.getInput(e, renderer, fireSound);
+            player.getInput(e, fireSound);
         }
 
         auto end = CLOCK_NOW();
@@ -432,7 +477,7 @@ void Game::run()
             break;
     }
 
-    renderGameOver();
+    // renderGameOver();
 
     close();
 }
