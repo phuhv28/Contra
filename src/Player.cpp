@@ -2,7 +2,7 @@
 
 Player::Player()
 {
-    x = 100;
+    x = 2000;
     y = 0;
     curFrame = 0;
     frameH = 0;
@@ -566,7 +566,7 @@ void Player::createBullet()
         newBullet->setPos(x + 81 - BULLET_SPEED, y + 30);
         newBullet->setVelX(BULLET_SPEED);
         newBullet->setVelY(0);
-        // std::cout << 100;
+        // std::cout << 2080;
     }
     else if (status.action == Action::AIM_LEFT_WHILE_WALKING)
     {

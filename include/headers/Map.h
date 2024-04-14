@@ -12,6 +12,7 @@ public:
     ~GameMap() {};
     void loadMap(std::string path);
     Map getMap() { return gameMap; }
+    void changeMap(int x, int y, int state) { gameMap.tile[y][x] = state; }
 
 private:
     Map gameMap;

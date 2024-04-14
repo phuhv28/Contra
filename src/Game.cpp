@@ -14,7 +14,14 @@ Game::Game(SDL_Renderer *renderer, SDL_Window *window)
     map.loadMap("map/map.txt");
     player.loadIMG("res/img/standingR.png");
     gameOver = Mix_LoadMUS("res/sound/game_over.wav");
-    x.loadIMG("res/img/explosion.png");
+    // x.loadIMG("res/img/explosion.png");
+    bridge[0].loadIMG("res/img/bridge.png");
+    bridge[1].loadIMG("res/img/bridge.png");
+
+    bridge[0].setX(2304);
+    bridge[0].setY(288);
+    bridge[1].setX(3168);
+    bridge[1].setY(288);
 }
 
 Game::~Game()
@@ -398,6 +405,8 @@ void Game::renderGamePlay()
     // std::cout << enemyList2.size() << " ";
 
     player.action(map.getMap());
+    bridge[0].action(player.getX(), map);
+    bridge[1].action(player.getX(), map);
     handleCol();
 
     setCamera();
@@ -409,10 +418,12 @@ void Game::renderGamePlay()
     }
 
     handleEnemy();
+    bridge[0].show();
+    bridge[1].show();
     player.show();
     
-    x.setPos(player.getX(), player.getY());
-    x.render();
+    // x.setPos(player.getX(), player.getY());
+    // x.render();
 
     for (int i = 0; i < enemyList1.size(); i++)
     {

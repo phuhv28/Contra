@@ -34,9 +34,6 @@ const int GRAVITY = 10;
 
 struct Map
 {
-    int x, y;
-    int tileX, tileY;
-
     int tile[MAX_MAP_Y][MAX_MAP_X];
 };
 
