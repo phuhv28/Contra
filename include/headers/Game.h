@@ -16,6 +16,7 @@ public:
     void setCamera();
     std::vector<Enemy1 *> createEnemies1();
     std::vector<Enemy2 *> createEnemies2();
+    std::vector<Enemy3 *> createEnemies3();
     void handleCol();
     void renderGamePlay();
     bool checkCol(const SDL_Rect &a, const SDL_Rect &b);
@@ -35,6 +36,7 @@ private:
     SDL_Event e;
     std::vector<Enemy1 *> enemyList1;
     std::vector<Enemy2 *> enemyList2;
+    std::vector<Enemy3 *> enemyList3;
     // The music that will be played
     Mix_Music *gMusic = NULL;
     Mix_Music *gameOver = NULL;
@@ -42,7 +44,6 @@ private:
     // The sound effects that will be used
     Mix_Chunk *title = NULL;
     Mix_Chunk *fireSound = NULL;
-    // Explosion x;
     Bridge bridge[2];
 };
 

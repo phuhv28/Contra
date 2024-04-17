@@ -8,13 +8,13 @@ Game::Game(SDL_Renderer *renderer, SDL_Window *window)
     backGround.loadIMG("res/img/background.png");
     enemyList1 = createEnemies1();
     enemyList2 = createEnemies2();
+    enemyList3 = createEnemies3();
     title = Mix_LoadWAV("res/sound/title.wav");
     fireSound = Mix_LoadWAV("res/sound/rifle.wav");
     gMusic = Mix_LoadMUS("res/sound/music.wav");
     map.loadMap("map/map.txt");
     player.loadIMG("res/img/standingR.png");
     gameOver = Mix_LoadMUS("res/sound/game_over.wav");
-    // x.loadIMG("res/img/explosion.png");
     bridge[0].loadIMG("res/img/bridge.png");
     bridge[1].loadIMG("res/img/bridge.png");
 
@@ -131,6 +131,20 @@ std::vector<Enemy2 *> Game::createEnemies2()
     enemyList2.push_back(pEnemy);
 
     return enemyList2;
+}
+
+std::vector<Enemy3 *> Game::createEnemies3()
+{
+    std::vector<Enemy3 *> enemyList3;
+
+    Enemy3 *pEnemy = new Enemy3();
+
+    pEnemy->setX(3744);
+    pEnemy->setY(384);
+    enemyList3.push_back(pEnemy);
+
+
+    return enemyList3;
 }
 
 void Game::removeEnemy(int enemyType, int index)
@@ -402,7 +416,12 @@ void Game::renderGamePlay()
         if (pEnemy != NULL)
             pEnemy->action(map.getMap(), player.getX() + player.getFrameW() / 2, player.getY() + player.getFrameH() / 2);
     }
-    // std::cout << enemyList2.size() << " ";
+    for (int i = 0; i < enemyList3.size(); i++)
+    {
+        Enemy3 *pEnemy = enemyList3[i];
+        if (pEnemy != NULL)
+            pEnemy->action(map.getMap(), player.getX() + player.getFrameW() / 2, player.getY() + player.getFrameH() / 2);
+    }
 
     player.action(map.getMap());
     bridge[0].action(player.getX(), map);
@@ -416,14 +435,14 @@ void Game::renderGamePlay()
     {
         enemyList2[i]->handleBullet();
     }
+    for (int i = 0; i < enemyList3.size(); i++)
+    {
+        enemyList3[i]->handleBullet();
+    }
 
     handleEnemy();
     bridge[0].show();
     bridge[1].show();
-    player.show();
-    
-    // x.setPos(player.getX(), player.getY());
-    // x.render();
 
     for (int i = 0; i < enemyList1.size(); i++)
     {
@@ -437,9 +456,19 @@ void Game::renderGamePlay()
         if (pEnemy != NULL)
         {
             pEnemy->show();
-            // std::cout << 100;
         }
     }
+    for (int i = 0; i < enemyList3.size(); i++)
+    {
+        Enemy3 *pEnemy = enemyList3[i];
+        if (pEnemy != NULL)
+        {
+            pEnemy->show();
+        }
+    }
+
+    player.show();
+
 
     SDL_RenderPresent(renderer);
 }

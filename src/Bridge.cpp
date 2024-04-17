@@ -39,7 +39,8 @@ void Bridge::action(int playerX, GameMap &gameMap)
 
     if (isExploding)
     {
-        gameMap.changeMap((x + curFrame * TILE_SIZE) / TILE_SIZE, y / TILE_SIZE, 0);
+        gameMap.changeMap((x + curFrame % 4 * TILE_SIZE) / TILE_SIZE, y / TILE_SIZE, 0);
+        std::cout << 1 << " ";
 
         if (curFrame < 5)
             aCurFrame++;
