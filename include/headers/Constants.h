@@ -21,7 +21,9 @@ const int SCREEN_HEIGHT = 672;
 const int FPS = 30;
 const double SCREEN_TICKS_PER_FRAME = 1000.0 / FPS;
 const int SLOWMOTION_ANIMATION_RATE = 4;
-const int BULLET_SPEED = 10;
+const int PLAYER_BULLET_SPEED = 15;
+const int ENEMY_BULLET_SPEED = 5;
+const int RELOAD = 5;
 
 const int MAX_NUM_FRAME = 10;
 const int PLAYER_SPEED_X = 7;

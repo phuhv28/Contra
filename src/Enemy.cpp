@@ -206,8 +206,8 @@ void Enemy2::createBullet(int playerX, int playerY)
         newBullet->setPos(x + 71, y + 78);
     }
 
-    newBullet->setVelX((playerX - newBullet->getX()) / sqrt((playerX - newBullet->getX()) * (playerX - newBullet->getX()) + (playerY - newBullet->getY()) * (playerY - newBullet->getY())) * BULLET_SPEED);
-    newBullet->setVelY((playerY - newBullet->getY()) / sqrt((playerX - newBullet->getX()) * (playerX - newBullet->getX()) + (playerY - newBullet->getY()) * (playerY - newBullet->getY())) * BULLET_SPEED);
+    newBullet->setVelX((playerX - newBullet->getX()) / sqrt((playerX - newBullet->getX()) * (playerX - newBullet->getX()) + (playerY - newBullet->getY()) * (playerY - newBullet->getY())) * ENEMY_BULLET_SPEED);
+    newBullet->setVelY((playerY - newBullet->getY()) / sqrt((playerX - newBullet->getX()) * (playerX - newBullet->getX()) + (playerY - newBullet->getY()) * (playerY - newBullet->getY())) * ENEMY_BULLET_SPEED);
 
     newBullet->setOnScreen();
 
@@ -375,73 +375,73 @@ void Enemy3::createBullet(int playerX, int playerY)
     {
         newBullet->setPos(x + 42, y + 7);
         newBullet->setVelX(0);
-        newBullet->setVelY(-BULLET_SPEED);
+        newBullet->setVelY(-ENEMY_BULLET_SPEED);
     }
     else if (status == Enemy3Action::AIM_90_DEGREE)
     {
         newBullet->setPos(x + 93, y + 42);
-        newBullet->setVelX(BULLET_SPEED);
+        newBullet->setVelX(ENEMY_BULLET_SPEED);
         newBullet->setVelY(0);
     }
     else if (status == Enemy3Action::AIM_30_DEGREE)
     {
         newBullet->setPos(x + 67, y);
-        newBullet->setVelX(BULLET_SPEED * sin(M_PI / 6));
-        newBullet->setVelY(-BULLET_SPEED * cos(M_PI / 6));
+        newBullet->setVelX(ENEMY_BULLET_SPEED * sin(M_PI / 6));
+        newBullet->setVelY(-ENEMY_BULLET_SPEED * cos(M_PI / 6));
     }
     else if (status == Enemy3Action::AIM_60_DEGREE)
     {
         newBullet->setPos(x + 84, y + 18);
-        newBullet->setVelX(BULLET_SPEED * sin(M_PI / 3));
-        newBullet->setVelY(-BULLET_SPEED * cos(M_PI / 3));
+        newBullet->setVelX(ENEMY_BULLET_SPEED * sin(M_PI / 3));
+        newBullet->setVelY(-ENEMY_BULLET_SPEED * cos(M_PI / 3));
     }
     else if (status == Enemy3Action::AIM_120_DEGREE)
     {
         newBullet->setPos(x + 83, y + 68);
-        newBullet->setVelX(BULLET_SPEED * sin(M_PI * 2 / 3));
-        newBullet->setVelY(-BULLET_SPEED * cos(M_PI * 2 / 3));
+        newBullet->setVelX(ENEMY_BULLET_SPEED * sin(M_PI * 2 / 3));
+        newBullet->setVelY(-ENEMY_BULLET_SPEED * cos(M_PI * 2 / 3));
     }
     else if (status == Enemy3Action::AIM_150_DEGREE)
     {
         newBullet->setPos(x + 68, y + 84);
-        newBullet->setVelX(BULLET_SPEED * sin(M_PI * 5 / 6));
-        newBullet->setVelY(-BULLET_SPEED * cos(M_PI * 5 / 6));
+        newBullet->setVelX(ENEMY_BULLET_SPEED * sin(M_PI * 5 / 6));
+        newBullet->setVelY(-ENEMY_BULLET_SPEED * cos(M_PI * 5 / 6));
     }
     else if (status == Enemy3Action::AIM_180_DEGREE)
     {
         newBullet->setPos(x + 42, y + 88);
         newBullet->setVelX(0);
-        newBullet->setVelY(BULLET_SPEED);
+        newBullet->setVelY(ENEMY_BULLET_SPEED);
     }
     else if (status == Enemy3Action::AIM_210_DEGREE)
     {
         newBullet->setPos(x + 18, y + 84);
-        newBullet->setVelX(BULLET_SPEED * sin(M_PI * 7 / 6));
-        newBullet->setVelY(-BULLET_SPEED * cos(M_PI * 7 / 6));
+        newBullet->setVelX(ENEMY_BULLET_SPEED * sin(M_PI * 7 / 6));
+        newBullet->setVelY(-ENEMY_BULLET_SPEED * cos(M_PI * 7 / 6));
     }
     else if (status == Enemy3Action::AIM_240_DEGREE)
     {
         newBullet->setPos(x + 2, y + 69);
-        newBullet->setVelX(BULLET_SPEED * sin(M_PI * 4 / 3));
-        newBullet->setVelY(-BULLET_SPEED * cos(M_PI * 4 / 3));
+        newBullet->setVelX(ENEMY_BULLET_SPEED * sin(M_PI * 4 / 3));
+        newBullet->setVelY(-ENEMY_BULLET_SPEED * cos(M_PI * 4 / 3));
     }
     else if (status == Enemy3Action::AIM_270_DEGREE)
     {
         newBullet->setPos(x, y + 42);
-        newBullet->setVelX(BULLET_SPEED * sin(M_PI * 3 / 2));
-        newBullet->setVelY(-BULLET_SPEED * cos(M_PI * 3 / 2));
+        newBullet->setVelX(ENEMY_BULLET_SPEED * sin(M_PI * 3 / 2));
+        newBullet->setVelY(-ENEMY_BULLET_SPEED * cos(M_PI * 3 / 2));
     }
     else if (status == Enemy3Action::AIM_300_DEGREE)
     {
         newBullet->setPos(x + 2, y + 19);
-        newBullet->setVelX(BULLET_SPEED * sin(M_PI * 5 / 3));
-        newBullet->setVelY(-BULLET_SPEED * cos(M_PI * 5 / 3));
+        newBullet->setVelX(ENEMY_BULLET_SPEED * sin(M_PI * 5 / 3));
+        newBullet->setVelY(-ENEMY_BULLET_SPEED * cos(M_PI * 5 / 3));
     }
     else if (status == Enemy3Action::AIM_330_DEGREE)
     {
         newBullet->setPos(x + 18, y + 2);
-        newBullet->setVelX(BULLET_SPEED * sin(M_PI * 11 / 6));
-        newBullet->setVelY(-BULLET_SPEED * cos(M_PI * 11 / 6));
+        newBullet->setVelX(ENEMY_BULLET_SPEED * sin(M_PI * 11 / 6));
+        newBullet->setVelY(-ENEMY_BULLET_SPEED * cos(M_PI * 11 / 6));
     }
 
     newBullet->setOnScreen();

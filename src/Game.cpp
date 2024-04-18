@@ -12,6 +12,7 @@ Game::Game(SDL_Renderer *renderer, SDL_Window *window)
     title = Mix_LoadWAV("res/sound/title.wav");
     fireSound = Mix_LoadWAV("res/sound/rifle.wav");
     gMusic = Mix_LoadMUS("res/sound/music.wav");
+    enemyDead = Mix_LoadWAV("res/sound/enemy_death.wav");
     map.loadMap("map/map.txt");
     player.loadIMG("res/img/standingR.png");
     gameOver = Mix_LoadMUS("res/sound/game_over.wav");
@@ -92,7 +93,7 @@ std::vector<Enemy1 *> Game::createEnemies1()
     pEnemy->setX(2944);
     pEnemy->setY(207);
     enemyList1.push_back(pEnemy);
-    
+
     pEnemy = new Enemy1();
     pEnemy->setX(3264);
     pEnemy->setY(207);
@@ -124,7 +125,7 @@ std::vector<Enemy2 *> Game::createEnemies2()
     pEnemy->setX(1888);
     pEnemy->setY(474);
     enemyList2.push_back(pEnemy);
-    
+
     pEnemy = new Enemy2();
     pEnemy->setX(3808);
     pEnemy->setY(186);
@@ -138,11 +139,49 @@ std::vector<Enemy3 *> Game::createEnemies3()
     std::vector<Enemy3 *> enemyList3;
 
     Enemy3 *pEnemy = new Enemy3();
-
     pEnemy->setX(3744);
     pEnemy->setY(384);
     enemyList3.push_back(pEnemy);
 
+    pEnemy = new Enemy3();
+    pEnemy->setX(4701);
+    pEnemy->setY(384);
+    enemyList3.push_back(pEnemy);
+
+    pEnemy = new Enemy3();
+    pEnemy->setX(4896);
+    pEnemy->setY(288);
+    enemyList3.push_back(pEnemy);
+
+    pEnemy = new Enemy3();
+    pEnemy->setX(5472);
+    pEnemy->setY(288);
+    enemyList3.push_back(pEnemy);
+
+    pEnemy = new Enemy3();
+    pEnemy->setX(6144);
+    pEnemy->setY(384);
+    enemyList3.push_back(pEnemy);
+
+    pEnemy = new Enemy3();
+    pEnemy->setX(6528);
+    pEnemy->setY(96);
+    enemyList3.push_back(pEnemy);
+
+    pEnemy = new Enemy3();
+    pEnemy->setX(8256);
+    pEnemy->setY(288);
+    enemyList3.push_back(pEnemy);
+
+    pEnemy = new Enemy3();
+    pEnemy->setX(8928);
+    pEnemy->setY(480);
+    enemyList3.push_back(pEnemy);
+
+    pEnemy = new Enemy3();
+    pEnemy->setX(9312);
+    pEnemy->setY(480);
+    enemyList3.push_back(pEnemy);
 
     return enemyList3;
 }
@@ -233,56 +272,27 @@ bool Game::checkCol(const SDL_Rect &a, const SDL_Rect &b)
 
 void Game::handleCol()
 {
-    // Collision player with enemies
-
-    for (int i = 0; i < enemyList1.size(); i++)
-    {
-        if (enemyList1[i] != NULL)
-        {
-            SDL_Rect a = {enemyList1[i]->getX(), enemyList1[i]->getY(), 68, 96};
-            // std:: cout << a.x << " " << a.y << " " << a.w << " " << a.h << std::endl;
-            SDL_Rect b = {player.getX(), player.getY(), player.getFrameW(), player.getFrameH()};
-            // std:: cout << b.x << " " << b.y << " " << b.w << " " << b.h << std::endl;
-            if (checkCol(a, b))
-            {
-                if (!player.isDead())
-                    player.setDied();
-            }
-        }
-    }
-
-    for (int i = 0; i < enemyList2.size(); i++)
-    {
-        if (enemyList2[i] != NULL)
-        {
-            SDL_Rect a = {enemyList2[i]->getX(), enemyList2[i]->getY(), 68, 96};
-            // std:: cout << a.x << " " << a.y << " " << a.w << " " << a.h << std::endl;
-            SDL_Rect b = {player.getX(), player.getY(), player.getFrameW(), player.getFrameH()};
-            // std:: cout << b.x << " " << b.y << " " << b.w << " " << b.h << std::endl;
-            if (checkCol(a, b))
-            {
-                if (!player.isDead())
-                    player.setDied();
-            }
-        }
-    }
-
-    // Collision player's bullet with enenmies
-
+    SDL_Rect playerHitBox = {player.getX(), player.getY(), player.getFrameW(), player.getFrameH()};
     std::vector<Bullet *> bulletList = player.getBullet();
 
     for (int i = 0; i < enemyList1.size(); i++)
     {
+        SDL_Rect enemy1HitBox = {enemyList1[i]->getX(), enemyList1[i]->getY(), 68, 96};
         if (enemyList1[i] != NULL)
         {
+            if (checkCol(enemy1HitBox, playerHitBox))
+            {
+                if (!player.isDead())
+                    player.setDied();
+            }
             for (int j = 0; j < bulletList.size(); j++)
             {
                 if (bulletList[j] != NULL)
                 {
-                    SDL_Rect a = {bulletList[j]->getX(), bulletList[j]->getY(), 10, 10};
-                    SDL_Rect b = {enemyList1[i]->getX(), enemyList1[i]->getY(), 68, 96};
-                    if (checkCol(a, b))
+                    SDL_Rect playerBulletHitBox = {bulletList[j]->getX(), bulletList[j]->getY(), 10, 10};
+                    if (checkCol(playerBulletHitBox, enemy1HitBox))
                     {
+                        Mix_PlayChannel(-1, enemyDead, 0);
                         removeEnemy(1, i);
                         player.removeBullet(j);
                     }
@@ -293,19 +303,54 @@ void Game::handleCol()
 
     for (int i = 0; i < enemyList2.size(); i++)
     {
+        SDL_Rect enemy2HitBox = {enemyList2[i]->getX(), enemyList2[i]->getY(), 68, 96};
         if (enemyList2[i] != NULL)
         {
+            if (checkCol(playerHitBox, enemy2HitBox))
+            {
+                if (!player.isDead())
+                    player.setDied();
+            }
+
+            std::vector<Bullet *> enemies2BulletList = enemyList2[i]->getBullet();
+            for (int j = 0; j < enemies2BulletList.size(); j++)
+            {
+                SDL_Rect bulletHitBox = {enemies2BulletList[j]->getX(), enemies2BulletList[j]->getY(), 10, 10};
+                if (checkCol(bulletHitBox, playerHitBox))
+                {
+                    if (!player.isDead())
+                        player.setDied();
+                }
+            }
+
             for (int j = 0; j < bulletList.size(); j++)
             {
                 if (bulletList[j] != NULL)
                 {
-                    SDL_Rect a = {bulletList[j]->getX(), bulletList[j]->getY(), 10, 10};
-                    SDL_Rect b = {enemyList2[i]->getX(), enemyList2[i]->getY(), 68, 96};
-                    if (checkCol(a, b))
+                    SDL_Rect bulletHitBox = {bulletList[j]->getX(), bulletList[j]->getY(), 10, 10};
+                    if (checkCol(bulletHitBox, enemy2HitBox))
                     {
+                        Mix_PlayChannel(-1, enemyDead, 0);
                         removeEnemy(2, i);
                         player.removeBullet(j);
                     }
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < enemyList3.size(); i++)
+    {
+        if (enemyList3[i] != NULL)
+        {
+            std::vector<Bullet *> enemies3BulletList = enemyList3[i]->getBullet();
+            for (int j = 0; j < enemies3BulletList.size(); j++)
+            {
+                SDL_Rect bulletHitbox = {enemies3BulletList[j]->getX(), enemies3BulletList[j]->getY(), 10, 10};
+                if (checkCol(bulletHitbox, playerHitBox))
+                {
+                    if (!player.isDead())
+                        player.setDied();
                 }
             }
         }
@@ -469,7 +514,6 @@ void Game::renderGamePlay()
 
     player.show();
 
-
     SDL_RenderPresent(renderer);
 }
 
@@ -493,7 +537,6 @@ void Game::run()
     Mix_FreeChunk(title);
     Mix_PlayMusic(gMusic, -1);
 
-    
     while (!quit)
     {
         auto start = CLOCK_NOW();
@@ -510,8 +553,7 @@ void Game::run()
         auto end = CLOCK_NOW();
 
         ElapsedTime elapsedTime = end - start;
-        // std::cout << elapsedTime.count() << " ";
-
+        
         if (elapsedTime.count() < SCREEN_TICKS_PER_FRAME)
         {
             SDL_Delay(SCREEN_TICKS_PER_FRAME - elapsedTime.count());

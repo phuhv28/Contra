@@ -13,10 +13,6 @@ Explosion::Explosion()
     aCurFrame = 0;
     curFrame = 0;
     done = false;
-    // loadIMG("res/img/explosion.png");
-    // if (texture == NULL)
-    //     std::cout << "Error";
-    // std::cout << 100;
 }
 
 Explosion::~Explosion()

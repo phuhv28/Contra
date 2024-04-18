@@ -37,13 +37,12 @@ private:
     std::vector<Enemy1 *> enemyList1;
     std::vector<Enemy2 *> enemyList2;
     std::vector<Enemy3 *> enemyList3;
-    // The music that will be played
     Mix_Music *gMusic = NULL;
     Mix_Music *gameOver = NULL;
 
-    // The sound effects that will be used
     Mix_Chunk *title = NULL;
     Mix_Chunk *fireSound = NULL;
+    Mix_Chunk *enemyDead = NULL;
     Bridge bridge[2];
 };
 

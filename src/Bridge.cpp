@@ -25,22 +25,20 @@ void Bridge::show()
 
     if (curFrame >= 1 && aCurFrame < 99)
     {
-    explosion.loadIMG("res/img/explosion.png");
-    explosion.setPos(x + (curFrame - 1) * TILE_SIZE, y);
-    explosion.render();
+        explosion.loadIMG("res/img/explosion.png");
+        explosion.setPos(x + (curFrame - 1) * TILE_SIZE, y);
+        explosion.render();
     }
-
 }
 
 void Bridge::action(int playerX, GameMap &gameMap)
 {
-    if (x - playerX <= 100 && curFrame == 0)
+    if (x - playerX <= 200 && curFrame == 0)
         isExploding = true;
 
     if (isExploding)
     {
-        gameMap.changeMap((x + curFrame % 4 * TILE_SIZE) / TILE_SIZE, y / TILE_SIZE, 0);
-        std::cout << 1 << " ";
+        gameMap.changeMap((x + std::max(0, curFrame - 1) * TILE_SIZE) / TILE_SIZE, y / TILE_SIZE, 0);
 
         if (curFrame < 5)
             aCurFrame++;

@@ -64,6 +64,8 @@ public:
     void chooseStatus(int playerX, int playerY);
     void createBullet(int playerX, int playerY);
     void handleBullet();
+    std::vector<Bullet*> getBullet() const { return bulletList; }
+
 
 private:
     Enemy2Action status;
@@ -88,6 +90,8 @@ public:
     void chooseStatus(int playerX, int playerY);
     void createBullet(int playerX, int playerY);
     void handleBullet();
+    std::vector<Bullet*> getBullet() const { return bulletList; }
+
 
 private:
     Enemy3Action status;

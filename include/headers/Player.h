@@ -85,6 +85,7 @@ private:
     std::vector<Bullet*> bullet;
     Status status;
     Timer clock;
+    int timer;
     Mix_Chunk *fireSound;
 
 
