@@ -2,7 +2,7 @@
 
 Player::Player()
 {
-    x = 100;
+    x = 9000;
     y = 0;
     curFrame = 0;
     frameH = 0;
@@ -478,7 +478,7 @@ void Player::action(Map map)
 
     if (x < 0 || x > MAX_MAP_X * TILE_SIZE)
         x = 0;
-    if (y < 0 || y > MAX_MAP_Y * TILE_SIZE)
+    if (y > MAX_MAP_Y * TILE_SIZE)
     {
         x = Object::camera.x + TILE_SIZE / 2;
         y = TILE_SIZE;

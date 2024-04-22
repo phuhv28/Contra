@@ -108,6 +108,66 @@ std::vector<Enemy1 *> Game::createEnemies1()
     pEnemy->setX(4064);
     pEnemy->setY(207);
     enemyList1.push_back(pEnemy);
+
+    //     pEnemy = new Enemy1();
+    // pEnemy->setX(4608);
+    // pEnemy->setY(207);
+    // enemyList1.push_back(pEnemy);
+    pEnemy = new Enemy1();
+    pEnemy->setX(5184);
+    pEnemy->setY(0);
+    enemyList1.push_back(pEnemy);
+
+    pEnemy = new Enemy1();
+    pEnemy->setX(5664);
+    pEnemy->setY(495);
+    enemyList1.push_back(pEnemy);
+
+    pEnemy = new Enemy1();
+    pEnemy->setX(7104);
+    pEnemy->setY(303);
+    enemyList1.push_back(pEnemy);
+
+    pEnemy = new Enemy1();
+    pEnemy->setX(6528);
+    pEnemy->setY(303);
+    enemyList1.push_back(pEnemy);
+
+    pEnemy = new Enemy1();
+    pEnemy->setX(6720);
+    pEnemy->setY(303);
+    enemyList1.push_back(pEnemy);
+
+    pEnemy = new Enemy1();
+    pEnemy->setX(7360);
+    pEnemy->setY(399);
+    enemyList1.push_back(pEnemy);
+
+    pEnemy = new Enemy1();
+    pEnemy->setX(7392);
+    pEnemy->setY(207);
+    enemyList1.push_back(pEnemy);
+
+    pEnemy = new Enemy1();
+    pEnemy->setX(4788);
+    pEnemy->setY(111);
+    enemyList1.push_back(pEnemy);
+
+    pEnemy = new Enemy1();
+    pEnemy->setX(8544);
+    pEnemy->setY(399);
+    enemyList1.push_back(pEnemy);
+
+    pEnemy = new Enemy1();
+    pEnemy->setX(9024);
+    pEnemy->setY(495);
+    enemyList1.push_back(pEnemy);
+
+    pEnemy = new Enemy1();
+    pEnemy->setX(9024);
+    pEnemy->setY(207);
+    enemyList1.push_back(pEnemy);
+
     return enemyList1;
 }
 
@@ -129,6 +189,21 @@ std::vector<Enemy2 *> Game::createEnemies2()
     pEnemy = new Enemy2();
     pEnemy->setX(3808);
     pEnemy->setY(186);
+    enemyList2.push_back(pEnemy);
+
+    pEnemy = new Enemy2();
+    pEnemy->setX(4608);
+    pEnemy->setY(90);
+    enemyList2.push_back(pEnemy);
+
+    pEnemy = new Enemy2();
+    pEnemy->setX(7104);
+    pEnemy->setY(282);
+    enemyList2.push_back(pEnemy);
+
+    pEnemy = new Enemy2();
+    pEnemy->setX(9696);
+    pEnemy->setY(90);
     enemyList2.push_back(pEnemy);
 
     return enemyList2;
@@ -211,6 +286,19 @@ void Game::removeEnemy(int enemyType, int index)
                 enemyList2[index]->free();
                 delete enemyList2[index];
                 enemyList2.erase(enemyList2.begin() + index);
+            }
+        }
+    }
+    else if (enemyType == 3)
+    {
+        int size = enemyList3.size();
+        if (size > 0 && index < size)
+        {
+            if (enemyList3[index] != NULL)
+            {
+                enemyList3[index]->free();
+                delete enemyList3[index];
+                enemyList3.erase(enemyList3.begin() + index);
             }
         }
     }
@@ -343,6 +431,8 @@ void Game::handleCol()
     {
         if (enemyList3[i] != NULL)
         {
+            SDL_Rect enemy3HitBox = {enemyList3[i]->getX(), enemyList3[i]->getY(), 96, 96};
+
             std::vector<Bullet *> enemies3BulletList = enemyList3[i]->getBullet();
             for (int j = 0; j < enemies3BulletList.size(); j++)
             {
@@ -351,6 +441,20 @@ void Game::handleCol()
                 {
                     if (!player.isDead())
                         player.setDied();
+                }
+            }
+
+            for (int j = 0; j < bulletList.size(); j++)
+            {
+                if (bulletList[j] != NULL)
+                {
+                    SDL_Rect bulletHitBox = {bulletList[j]->getX(), bulletList[j]->getY(), 10, 10};
+                    if (checkCol(bulletHitBox, enemy3HitBox))
+                    {
+                        Mix_PlayChannel(-1, enemyDead, 0);
+                        removeEnemy(3, i);
+                        player.removeBullet(j);
+                    }
                 }
             }
         }
@@ -553,7 +657,7 @@ void Game::run()
         auto end = CLOCK_NOW();
 
         ElapsedTime elapsedTime = end - start;
-        
+
         if (elapsedTime.count() < SCREEN_TICKS_PER_FRAME)
         {
             SDL_Delay(SCREEN_TICKS_PER_FRAME - elapsedTime.count());
