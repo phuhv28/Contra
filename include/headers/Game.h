@@ -23,9 +23,11 @@ public:
     void handleEnemy();
     void removeEnemy(int enemyType, int index);
     void renderSplashScreen();
-    void renderGameOver();
+    void renderGameOver(bool &playAgain);
+    void update();
+    void render();
     void close();
-    void run();
+    void run(bool &playAgain);
 
 private:
     SDL_Window *window;

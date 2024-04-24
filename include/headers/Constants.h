@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <cmath>
 #include <SDL_mixer.h>
+#include <memory>
 
 #define CLOCK_NOW std::chrono::system_clock::now
 typedef std::chrono::duration<double, std::milli> ElapsedTime;
@@ -28,7 +29,7 @@ const int RELOAD = 5;
 const int MAX_NUM_FRAME = 10;
 const int PLAYER_SPEED_X = 7;
 const int ENEMY_SPEED_X = 7;
-const int GRAVITY = 10;
+const int GRAVITY = 15;
 
 #define TILE_SIZE  96
 #define MAX_MAP_X  104

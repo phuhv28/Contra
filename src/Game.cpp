@@ -18,7 +18,6 @@ Game::Game(SDL_Renderer *renderer, SDL_Window *window)
     gameOver = Mix_LoadMUS("res/sound/game_over.wav");
     bridge[0].loadIMG("res/img/bridge.png");
     bridge[1].loadIMG("res/img/bridge.png");
-
     bridge[0].setX(2304);
     bridge[0].setY(288);
     bridge[1].setX(3168);
@@ -27,6 +26,19 @@ Game::Game(SDL_Renderer *renderer, SDL_Window *window)
 
 Game::~Game()
 {
+    backGround.free();
+
+    Mix_FreeChunk(title);
+    Mix_FreeChunk(fireSound);
+    Mix_FreeChunk(enemyDead);
+    Mix_FreeMusic(gMusic);
+    Mix_FreeMusic(gameOver);
+
+    gameOver = NULL;
+    gMusic = NULL;
+    title = NULL;
+    fireSound = NULL;
+    enemyDead = NULL;
 }
 
 void Game::setCamera()
@@ -109,10 +121,6 @@ std::vector<Enemy1 *> Game::createEnemies1()
     pEnemy->setY(207);
     enemyList1.push_back(pEnemy);
 
-    //     pEnemy = new Enemy1();
-    // pEnemy->setX(4608);
-    // pEnemy->setY(207);
-    // enemyList1.push_back(pEnemy);
     pEnemy = new Enemy1();
     pEnemy->setX(5184);
     pEnemy->setY(0);
@@ -519,9 +527,12 @@ void Game::renderSplashScreen()
             SDL_RenderPresent(renderer);
         }
     }
+
+    SDL_DestroyTexture(texture);
+    SDL_DestroyTexture(iconTexture);
 }
 
-void Game::renderGameOver()
+void Game::renderGameOver(bool &playAgain)
 {
     if (Mix_PlayingMusic() == 1)
     {
@@ -535,7 +546,7 @@ void Game::renderGameOver()
     SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);
     bool quit = false;
-    while (!quit)
+    while (!quit && playAgain == false)
     {
         while (SDL_PollEvent(&e) != 0)
         {
@@ -543,15 +554,30 @@ void Game::renderGameOver()
             {
                 quit = true;
             }
+
+            if (e.type == SDL_KEYDOWN)
+            {
+                switch (e.key.keysym.sym)
+                {
+                case SDLK_ESCAPE:
+                    quit = true;
+                    break;
+                case SDLK_RETURN:
+                    playAgain = true;
+                    break;
+                }
+            }
         }
     }
+    SDL_DestroyTexture(texture);
 }
 
-void Game::renderGamePlay()
+void Game::update()
 {
-    player.handleInputQueue(e);
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(renderer);
+
+    player.handleInputQueue(e);
 
     for (int i = 0; i < enemyList1.size(); i++)
     {
@@ -590,6 +616,11 @@ void Game::renderGamePlay()
     }
 
     handleEnemy();
+}
+
+void Game::render()
+{
+
     bridge[0].show();
     bridge[1].show();
 
@@ -617,25 +648,13 @@ void Game::renderGamePlay()
     }
 
     player.show();
-
     SDL_RenderPresent(renderer);
 }
 
-void Game::close()
-{
-    backGround.free();
-    SDL_DestroyWindow(window);
-    window = NULL;
-    SDL_DestroyRenderer(renderer);
-    renderer = NULL;
-    Mix_FreeChunk(title);
-    title = NULL;
-}
-
-void Game::run()
+void Game::run(bool &playAgain)
 {
     bool quit = false;
-    // renderSplashScreen();
+    renderSplashScreen();
 
     Mix_Pause(-1);
     Mix_FreeChunk(title);
@@ -662,12 +681,20 @@ void Game::run()
         {
             SDL_Delay(SCREEN_TICKS_PER_FRAME - elapsedTime.count());
         }
-        renderGamePlay();
+        update();
+        render();
         if (player.isDead())
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                SDL_RenderClear(renderer);
+                player.action(map.getMap());
+                backGround.render(&Object::camera);
+                render();
+                SDL_Delay(100);
+            }
+            renderGameOver(playAgain);
             break;
+        }
     }
-
-    // renderGameOver();
-
-    close();
 }

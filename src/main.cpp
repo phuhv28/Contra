@@ -59,14 +59,30 @@ bool init()
     return success;
 }
 
+void close()
+{
+    SDL_DestroyWindow(window);
+    window = NULL;
+    SDL_DestroyRenderer(renderer);
+    renderer = NULL;
+}
+
 int main(int argc, char *argv[])
 {
     init();
 
-    Game game(renderer, window);
+    bool playAgain = false;
 
-    game.run();
+    do
+    {
+        playAgain = false;
+        Object::camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+        std::cout << 1;
+        Game game(renderer, window);
+        game.run(playAgain);
+    } while (playAgain);
+
+    close();
 
     return 0;
 }
-

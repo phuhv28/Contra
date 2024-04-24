@@ -14,6 +14,7 @@ Object::Object()
 
 Object::~Object()
 {
+    free();
 }
 
 void Object::setRect(int x_, int y_)

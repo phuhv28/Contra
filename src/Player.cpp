@@ -2,7 +2,7 @@
 
 Player::Player()
 {
-    x = 9000;
+    x = 100;
     y = 0;
     curFrame = 0;
     frameH = 0;
@@ -19,6 +19,7 @@ Player::Player()
     status.action = Action::JUMPING;
     fireSound = NULL;
     timer = 0;
+    lives = 3;
 }
 
 Player::~Player()
@@ -139,7 +140,6 @@ void Player::show()
     }
 
     curFrame = aCurFrame / SLOWMOTION_ANIMATION_RATE;
-    // std::cout << curFrame << " ";
 
     SDL_Rect *curClip = &frameClip[curFrame];
 
@@ -258,7 +258,6 @@ void Player::getInput(SDL_Event e, Mix_Chunk *fireSound)
 
 void Player::handleInputQueue(SDL_Event e)
 {
-    // std::cout << inputQueue.size();
     if ((int)inputQueue.size() != 0)
     {
 
@@ -405,7 +404,6 @@ void Player::handleInputQueue(SDL_Event e)
         if (clock.getTick().count() > 400)
         {
             clock.stop();
-            // std::cout << 1;
         }
     }
 
@@ -415,18 +413,11 @@ void Player::handleInputQueue(SDL_Event e)
             status.action = Action::AIM_LEFT_WHILE_WALKING;
         if (status.action == Action::WALKING_RIGHT)
             status.action = Action::AIM_RIGHT_WHILE_WALKING;
-        // std::cout << 2 << " " << (int) status.action << std::endl;
     }
     else if (clock.getisStarted() == true)
     {
         clock.stop();
-        // std::cout << 3;
     }
-
-    // if (status.action == Action::WALKING_LEFT && status.isFiring == true)
-    //     status.action = Action::AIM_LEFT_WHILE_WALKING;
-    // if (status.action == Action::WALKING_RIGHT && status.isFiring == true)
-    //     status.action = Action::AIM_RIGHT_WHILE_WALKING;
 
     if (status.isFiring == true)
     {
@@ -437,6 +428,9 @@ void Player::handleInputQueue(SDL_Event e)
 
 void Player::action(Map map)
 {
+    if (isDead())
+        VelX = 0;
+
     timer++;
     if (timer >= RELOAD)
         timer = RELOAD;
@@ -447,12 +441,10 @@ void Player::action(Map map)
     int x2 = x1 + w[(int)status.action];
     int y1 = y + VelY;
     int y2 = y1 + h[(int)status.action];
-    // std::cout << std::boolalpha << status.isFalling << " " << status.onGround << std::endl;
     if ((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] != 0 ||
          map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] != 0) &&
         VelY >= 0 && (y + frameClip[curFrame].h) < (y2 / TILE_SIZE * TILE_SIZE) && status.isFalling == false)
     {
-        // std::cout << h[(int)status.action] << " ";
         y = y2 / TILE_SIZE * TILE_SIZE - h[(int)status.action] + 15;
         VelY = 0;
         status.onGround = true;
@@ -465,7 +457,6 @@ void Player::action(Map map)
     if (VelY == 0 && status.onGround == true &&
         (map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 0 && map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 0))
     {
-        // std::cout << "X";
         VelY = GRAVITY;
         status.onGround = false;
     }
@@ -488,12 +479,10 @@ void Player::action(Map map)
 
 void Player::createBullet()
 {
-    // std::cout << "VelX: " << VelX << std::endl;
     Bullet *newBullet = new Bullet();
     newBullet->loadIMG("res/img/bullet.png");
 
     // set start of bullet
-    // std::cout << x << " : " << y << std::endl;
 
     if (status.action == Action::STANDING_LEFT)
     {
@@ -562,14 +551,12 @@ void Player::createBullet()
             newBullet->setVelX(-PLAYER_BULLET_SPEED);
         if (direction.right == true)
             newBullet->setVelX(PLAYER_BULLET_SPEED);
-        // Xử lí sau
     }
     else if (status.action == Action::AIM_RIGHT_WHILE_WALKING)
     {
         newBullet->setPos(x + 81 - PLAYER_BULLET_SPEED, y + 30);
         newBullet->setVelX(PLAYER_BULLET_SPEED);
         newBullet->setVelY(0);
-        // std::cout << 2080;
     }
     else if (status.action == Action::AIM_LEFT_WHILE_WALKING)
     {

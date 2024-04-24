@@ -87,6 +87,7 @@ private:
     Timer clock;
     int timer;
     Mix_Chunk *fireSound;
+    int lives;
 
 
     int w[16] = {69, 69, 63, 63, 60, 60, 72, 72, 60, 102, 102, 42, 42, 81, 81, 102};
