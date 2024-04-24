@@ -378,8 +378,11 @@ void Game::handleCol()
         {
             if (checkCol(enemy1HitBox, playerHitBox))
             {
-                if (!player.isDead())
+                if (!player.isDead() && !player.isInvincible())
+                {
                     player.setDied();
+                    std::cout << 1 << " ";
+                }
             }
             for (int j = 0; j < bulletList.size(); j++)
             {
@@ -404,8 +407,11 @@ void Game::handleCol()
         {
             if (checkCol(playerHitBox, enemy2HitBox))
             {
-                if (!player.isDead())
+                if (!player.isDead() && !player.isInvincible())
+                {
                     player.setDied();
+                    std::cout << 2 << " ";
+                }
             }
 
             std::vector<Bullet *> enemies2BulletList = enemyList2[i]->getBullet();
@@ -414,8 +420,11 @@ void Game::handleCol()
                 SDL_Rect bulletHitBox = {enemies2BulletList[j]->getX(), enemies2BulletList[j]->getY(), 10, 10};
                 if (checkCol(bulletHitBox, playerHitBox))
                 {
-                    if (!player.isDead())
+                    if (!player.isDead() && !player.isInvincible())
+                    {
                         player.setDied();
+                        std::cout << 3 << " ";
+                    }
                 }
             }
 
@@ -447,8 +456,11 @@ void Game::handleCol()
                 SDL_Rect bulletHitbox = {enemies3BulletList[j]->getX(), enemies3BulletList[j]->getY(), 10, 10};
                 if (checkCol(bulletHitbox, playerHitBox))
                 {
-                    if (!player.isDead())
+                    if (!player.isDead() && !player.isInvincible())
+                    {
                         player.setDied();
+                        std::cout << 4 << " ";
+                    }
                 }
             }
 
@@ -685,14 +697,6 @@ void Game::run(bool &playAgain)
         render();
         if (player.isDead())
         {
-            for (int i = 0; i < 16; i++)
-            {
-                SDL_RenderClear(renderer);
-                player.action(map.getMap());
-                backGround.render(&Object::camera);
-                render();
-                SDL_Delay(100);
-            }
             renderGameOver(playAgain);
             break;
         }

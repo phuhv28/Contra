@@ -70,9 +70,10 @@ public:
     std::vector<Bullet*> getBullet() const { return bullet; }
     void createBullet();
     void handleBullet();
-    void setDied() { status.action = Action::DEAD; }
-    bool isDead() { return status.action == Action::DEAD; }
+    void setDied();
+    bool isDead() { return lives == 0; }
     void removeBullet(int index);
+    bool isInvincible() { return invincible != 0; }
 
 private:
     int frameW, frameH;
@@ -86,6 +87,7 @@ private:
     Status status;
     Timer clock;
     int timer;
+    int invincible;
     Mix_Chunk *fireSound;
     int lives;
 

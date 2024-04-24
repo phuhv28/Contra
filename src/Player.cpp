@@ -20,6 +20,7 @@ Player::Player()
     fireSound = NULL;
     timer = 0;
     lives = 3;
+    invincible = 0;
 }
 
 Player::~Player()
@@ -128,7 +129,7 @@ void Player::show()
         break;
     }
 
-    if ((int)inputQueue.size() != 0 || status.onGround == false || isDead())
+    if ((int)inputQueue.size() != 0 || status.onGround == false || status.action == Action::DEAD)
     {
         aCurFrame++;
         if (aCurFrame >= numFrame * SLOWMOTION_ANIMATION_RATE)
@@ -162,6 +163,8 @@ void Player::show()
 
 void Player::getInput(SDL_Event e, Mix_Chunk *fireSound)
 {
+    if (status.action == Action::DEAD)
+        return;
     if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
     {
         switch (e.key.keysym.sym)
@@ -258,6 +261,12 @@ void Player::getInput(SDL_Event e, Mix_Chunk *fireSound)
 
 void Player::handleInputQueue(SDL_Event e)
 {
+    if (status.action == Action::DEAD)
+    {
+        inputQueue.clear();
+        return;
+    }
+
     if ((int)inputQueue.size() != 0)
     {
 
@@ -426,10 +435,34 @@ void Player::handleInputQueue(SDL_Event e)
     }
 }
 
+void Player::setDied()
+{
+    lives--;
+    status.action = Action::DEAD;
+    invincible = 1;
+}
+
 void Player::action(Map map)
 {
-    if (isDead())
+    if (status.action == Action::DEAD && aCurFrame == 19)
+    {
+        x = Object::camera.x + TILE_SIZE / 2;
+        y = TILE_SIZE;
+        VelY = GRAVITY;
+        status.action = Action::JUMPING;
+    }
+
+    if (status.action == Action::DEAD)
+    {
         VelX = 0;
+    }
+
+    if (invincible != 0)
+    {
+        invincible++;
+        if (invincible > INVINCIBLE_TIME)
+            invincible = 0;
+    }
 
     timer++;
     if (timer >= RELOAD)
@@ -441,8 +474,8 @@ void Player::action(Map map)
     int x2 = x1 + w[(int)status.action];
     int y1 = y + VelY;
     int y2 = y1 + h[(int)status.action];
-    if ((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] != 0 ||
-         map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] != 0) &&
+    if (((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 1 || map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 2) ||
+         (map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 1 || map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 2)) &&
         VelY >= 0 && (y + frameClip[curFrame].h) < (y2 / TILE_SIZE * TILE_SIZE) && status.isFalling == false)
     {
         y = y2 / TILE_SIZE * TILE_SIZE - h[(int)status.action] + 15;
@@ -455,7 +488,8 @@ void Player::action(Map map)
 
     // Fall when go out of block 1
     if (VelY == 0 && status.onGround == true &&
-        (map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 0 && map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 0))
+        ((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] != 1 || map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] != 2) &&
+         (map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 0 || map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 3)))
     {
         VelY = GRAVITY;
         status.onGround = false;
@@ -471,9 +505,7 @@ void Player::action(Map map)
         x = 0;
     if (y > MAX_MAP_Y * TILE_SIZE)
     {
-        x = Object::camera.x + TILE_SIZE / 2;
-        y = TILE_SIZE;
-        VelY = GRAVITY;
+        status.action = Action::DEAD;
     }
 }
 

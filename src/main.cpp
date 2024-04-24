@@ -77,7 +77,6 @@ int main(int argc, char *argv[])
     {
         playAgain = false;
         Object::camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
-        std::cout << 1;
         Game game(renderer, window);
         game.run(playAgain);
     } while (playAgain);

@@ -30,6 +30,7 @@ const int MAX_NUM_FRAME = 10;
 const int PLAYER_SPEED_X = 7;
 const int ENEMY_SPEED_X = 7;
 const int GRAVITY = 15;
+const int INVINCIBLE_TIME = 100;
 
 #define TILE_SIZE  96
 #define MAX_MAP_X  104
