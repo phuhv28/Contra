@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <cmath>
 #include <SDL_mixer.h>
+#include <SDL_ttf.h>
 #include <memory>
 
 #define CLOCK_NOW std::chrono::system_clock::now

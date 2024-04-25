@@ -18,6 +18,7 @@ Game::Game(SDL_Renderer *renderer, SDL_Window *window)
     gameOver = Mix_LoadMUS("res/sound/game_over.wav");
     bridge[0].loadIMG("res/img/bridge.png");
     bridge[1].loadIMG("res/img/bridge.png");
+    gFont = TTF_OpenFont("res/font/contra-famicom-nes.ttf", 14);
     bridge[0].setX(2304);
     bridge[0].setY(288);
     bridge[1].setX(3168);
@@ -544,6 +545,46 @@ void Game::renderSplashScreen()
     SDL_DestroyTexture(iconTexture);
 }
 
+void Game::renderWonScreen(bool &playAgain)
+{
+    if (Mix_PlayingMusic() == 1)
+    {
+        Mix_PauseMusic();
+    }
+
+    Mix_PlayMusic(gameOver, 0);
+    SDL_Texture *texture = IMG_LoadTexture(renderer, "res/img/win.png");
+
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, texture, NULL, NULL);
+    SDL_RenderPresent(renderer);
+    bool quit = false;
+    while (!quit && playAgain == false)
+    {
+        while (SDL_PollEvent(&e) != 0)
+        {
+            if (e.type == SDL_QUIT)
+            {
+                quit = true;
+            }
+
+            if (e.type == SDL_KEYDOWN)
+            {
+                switch (e.key.keysym.sym)
+                {
+                case SDLK_ESCAPE:
+                    quit = true;
+                    break;
+                case SDLK_RETURN:
+                    playAgain = true;
+                    break;
+                }
+            }
+        }
+    }
+    SDL_DestroyTexture(texture);
+}
+
 void Game::renderGameOver(bool &playAgain)
 {
     if (Mix_PlayingMusic() == 1)
@@ -698,6 +739,12 @@ void Game::run(bool &playAgain)
         if (player.isDead())
         {
             renderGameOver(playAgain);
+            break;
+        }
+
+        if (player.isWon())
+        {
+            renderWonScreen(playAgain);
             break;
         }
     }

@@ -45,7 +45,5 @@ void Bridge::action(int playerX, GameMap &gameMap)
         curFrame = aCurFrame / 20;
         if (aCurFrame >= 99)
             isExploding = false;
-
-        // std::cout << aCurFrame << " ";
     }
 }

@@ -7,7 +7,7 @@ bool init()
 {
     bool success = true;
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
+    if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
     {
         std::cout << "SDL could not initialize! SDL Error:\n"
                   << SDL_GetError();
@@ -54,6 +54,13 @@ bool init()
                 }
             }
         }
+    }
+
+    // Initialize SDL_ttf
+    if (TTF_Init() == -1)
+    {
+        printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
+        success = false;
     }
 
     return success;

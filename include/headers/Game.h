@@ -28,6 +28,7 @@ public:
     void render();
     void close();
     void run(bool &playAgain);
+    void renderWonScreen(bool &playAgain);
 
 private:
     SDL_Window *window;
@@ -45,6 +46,8 @@ private:
     Mix_Chunk *title = NULL;
     Mix_Chunk *fireSound = NULL;
     Mix_Chunk *enemyDead = NULL;
+
+    TTF_Font* gFont = NULL;
     Bridge bridge[2];
 };
 

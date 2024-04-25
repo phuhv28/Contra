@@ -35,7 +35,8 @@ enum class Action
     AIM_UP_RIGHT,
     AIM_LEFT_WHILE_WALKING,
     AIM_RIGHT_WHILE_WALKING,
-    DEAD
+    DEAD,
+    WIN
 };
 
 struct Direction
@@ -74,6 +75,7 @@ public:
     bool isDead() { return lives == 0; }
     void removeBullet(int index);
     bool isInvincible() { return invincible != 0; }
+    bool isWon() { return status.action == Action::WIN; }
 
 private:
     int frameW, frameH;

@@ -29,8 +29,6 @@ void Explosion::render()
     }
     if (!done)
     {
-        // if (texture == NULL)
-        //     std::cout << "Error";
         SDL_Rect *curClip = &frameClip[curFrame];
 
         rect.x = x - Object::camera.x;
@@ -39,6 +37,5 @@ void Explosion::render()
         SDL_Rect renderQuad = {rect.x, rect.y, 90, 90};
 
         SDL_RenderCopy(renderer, texture, curClip, &renderQuad);
-        // std::cout << curFrame << " ";
     }
 }

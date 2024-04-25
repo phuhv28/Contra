@@ -2,7 +2,7 @@
 
 Player::Player()
 {
-    x = 100;
+    x = 9000;
     y = 0;
     curFrame = 0;
     frameH = 0;
@@ -152,7 +152,7 @@ void Player::show()
         y = Object::camera.y;
     if (y > Object::camera.y + SCREEN_HEIGHT)
         y = Object::camera.y + SCREEN_HEIGHT;
-
+        
     rect.x = x - Object::camera.x;
     rect.y = y - Object::camera.y;
 
@@ -444,7 +444,12 @@ void Player::setDied()
 
 void Player::action(Map map)
 {
-    if (status.action == Action::DEAD && aCurFrame == 19)
+    if (x == Object::camera.x + SCREEN_WIDTH)
+    {
+        status.action = Action::WIN;
+        return;
+    }
+    if (status.action == Action::DEAD && (aCurFrame == 19 || y >= MAX_MAP_Y * TILE_SIZE))
     {
         x = Object::camera.x + TILE_SIZE / 2;
         y = TILE_SIZE;
@@ -475,7 +480,7 @@ void Player::action(Map map)
     int y1 = y + VelY;
     int y2 = y1 + h[(int)status.action];
     if (((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 1 || map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 2) ||
-         (map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] == 1 || map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 2)) &&
+         (map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 1 || map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 2)) &&
         VelY >= 0 && (y + frameClip[curFrame].h) < (y2 / TILE_SIZE * TILE_SIZE) && status.isFalling == false)
     {
         y = y2 / TILE_SIZE * TILE_SIZE - h[(int)status.action] + 15;
@@ -486,13 +491,14 @@ void Player::action(Map map)
     if (status.isFalling == true)
         status.isFalling = false;
 
-    // Fall when go out of block 1
+    // Fall when go out of block 1 or 2
     if (VelY == 0 && status.onGround == true &&
-        ((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] != 1 || map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] != 2) &&
-         (map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 0 || map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] == 3)))
+        ((map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] != 1 && map.tile[y2 / TILE_SIZE][x1 / TILE_SIZE] != 2) &&
+         (map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] != 1 && map.tile[y2 / TILE_SIZE][x2 / TILE_SIZE] != 2)))
     {
         VelY = GRAVITY;
         status.onGround = false;
+        std::cout << 1;
     }
 
     x += VelX;
@@ -505,7 +511,7 @@ void Player::action(Map map)
         x = 0;
     if (y > MAX_MAP_Y * TILE_SIZE)
     {
-        status.action = Action::DEAD;
+        setDied();
     }
 }
 
