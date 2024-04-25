@@ -21,6 +21,7 @@ Player::Player()
     timer = 0;
     lives = 3;
     invincible = 0;
+    gFont = TTF_OpenFont("res/font/contra-famicom-nes.ttf", 28);
 }
 
 Player::~Player()
@@ -152,13 +153,28 @@ void Player::show()
         y = Object::camera.y;
     if (y > Object::camera.y + SCREEN_HEIGHT)
         y = Object::camera.y + SCREEN_HEIGHT;
-        
+
     rect.x = x - Object::camera.x;
     rect.y = y - Object::camera.y;
 
     SDL_Rect renderQuad = {rect.x, rect.y, frameW, frameH};
 
     SDL_RenderCopy(renderer, texture, curClip, &renderQuad);
+
+    SDL_Texture *mTexture = NULL;
+
+    SDL_Color textColor = {255, 255, 255};
+
+    SDL_Surface *textSurface = TTF_RenderText_Solid(gFont, ("Lives:" + std::to_string(lives)).c_str(), textColor);
+    int w = textSurface->w;
+    int h = textSurface->h;
+    mTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+
+    SDL_Rect destRect = {SCREEN_WIDTH - w - 10, 10, w, h};
+    SDL_RenderCopy(renderer, mTexture, NULL, &destRect);
+
+    SDL_FreeSurface(textSurface);
+    SDL_DestroyTexture(mTexture);
 }
 
 void Player::getInput(SDL_Event e, Mix_Chunk *fireSound)
@@ -444,7 +460,8 @@ void Player::setDied()
 
 void Player::action(Map map)
 {
-    if (x == Object::camera.x + SCREEN_WIDTH)
+    std::cout << x << " ";
+    if (x >= MAX_MAP_X * TILE_SIZE - 90)
     {
         status.action = Action::WIN;
         return;

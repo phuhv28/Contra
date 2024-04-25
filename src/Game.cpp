@@ -18,7 +18,6 @@ Game::Game(SDL_Renderer *renderer, SDL_Window *window)
     gameOver = Mix_LoadMUS("res/sound/game_over.wav");
     bridge[0].loadIMG("res/img/bridge.png");
     bridge[1].loadIMG("res/img/bridge.png");
-    gFont = TTF_OpenFont("res/font/contra-famicom-nes.ttf", 14);
     bridge[0].setX(2304);
     bridge[0].setY(288);
     bridge[1].setX(3168);

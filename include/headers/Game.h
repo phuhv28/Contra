@@ -47,7 +47,6 @@ private:
     Mix_Chunk *fireSound = NULL;
     Mix_Chunk *enemyDead = NULL;
 
-    TTF_Font* gFont = NULL;
     Bridge bridge[2];
 };
 

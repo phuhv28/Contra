@@ -6,7 +6,6 @@
 #include "Bullet.h"
 #include "Timer.h"
 
-
 enum class Input
 {
     NO_INPUT,
@@ -42,7 +41,7 @@ enum class Action
 struct Direction
 {
     bool left, right, up, down;
-    Direction() : left(false), right(false), up(false), down(false) {};
+    Direction() : left(false), right(false), up(false), down(false){};
 };
 
 struct Status
@@ -52,7 +51,6 @@ struct Status
     bool isFiring;
     Action action;
 };
-
 
 class Player : public Object
 {
@@ -67,8 +65,8 @@ public:
     void action(Map map);
     int getFrameW() { return frameW; }
     int getFrameH() { return frameH; }
-    void setBullet(std::vector<Bullet*> bulletList) { bullet = bulletList; }
-    std::vector<Bullet*> getBullet() const { return bullet; }
+    void setBullet(std::vector<Bullet *> bulletList) { bullet = bulletList; }
+    std::vector<Bullet *> getBullet() const { return bullet; }
     void createBullet();
     void handleBullet();
     void setDied();
@@ -85,7 +83,7 @@ private:
     Direction direction;
     int aCurFrame;
     std::vector<Input> inputQueue;
-    std::vector<Bullet*> bullet;
+    std::vector<Bullet *> bullet;
     Status status;
     Timer clock;
     int timer;
@@ -93,6 +91,7 @@ private:
     Mix_Chunk *fireSound;
     int lives;
 
+    TTF_Font *gFont = NULL;
 
     int w[16] = {69, 69, 63, 63, 60, 60, 72, 72, 60, 102, 102, 42, 42, 81, 81, 102};
     int h[16] = {105, 105, 108, 108, 102, 102, 102, 102, 60, 51, 51, 138, 138, 102, 102, 70};
