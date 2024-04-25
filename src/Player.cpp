@@ -2,7 +2,7 @@
 
 Player::Player()
 {
-    x = 9000;
+    x = 100;
     y = 0;
     curFrame = 0;
     frameH = 0;
