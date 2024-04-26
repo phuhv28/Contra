@@ -76,7 +76,7 @@ Dùng nút mũi tên trái phải trên bàn phím để di chuyển trái phả
 ![ezgif com-video-to-gif](res/preview/walking.gif)
 
 </div>
-Dùng nút mũi tên lên trên bàn phím để ngắm lên phía trên.
+Dùng nút mũi tên lên trên bàn phím để ngắm lên phía trên.<br>
 + Ấn mũi tên lên khi đứng yên thì nhân vật sẽ hướng súng thẳng đứng lên trên.
 <div style="text-align: center;">
 
@@ -89,7 +89,7 @@ Dùng nút mũi tên lên trên bàn phím để ngắm lên phía trên.
 ![ezgif com-video-to-gif](res/preview/aim_up_right.gif)
 
 </div>
-Dùng nút mũi tên hướng xuống trên bàn phím để nằm hoặc ngắm bắn bên dưới:
+Dùng nút mũi tên hướng xuống trên bàn phím để nằm hoặc ngắm bắn bên dưới:<br>
 + Ấn mũi tên hướng xuống khi đứng yên thì nhân vật sẽ nằm xuống.
 <div style="text-align: center;">
 
