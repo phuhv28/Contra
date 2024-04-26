@@ -13,7 +13,7 @@ Chắc chắn thế hệ 8x và nửa đầu 9x đều biết đến game Contra
 - [2. Các thành phần trong game:](#2-các-thành-phần-trong-game)
 - [3. Cách chơi](#3-cách-chơi)
 - [4. Chiến thắng và thất bại](#4-chiến-thắng-và-thất-bại)
-    - [Về am thanh đồ họa của game:](#về-am-thanh-đồ-họa-của-game)
+    - [Về âm thanh đồ họa của game:](#về-âm-thanh-đồ-họa-của-game)
     - [Về source code game:](#về-source-code-game)
 
 # 0. Cách tải game
@@ -96,14 +96,13 @@ Dùng nút mũi tên hướng xuống trên bàn phím để nằm hoặc ngắm
 </div>
 
 ---
-
 ### Về âm thanh đồ họa của game:
 
 Sử dụng trên Internet và có chỉnh sửa đôi chút.
 Nguồn:
-https://github.com/david-campos/Contra
-https://www.alamy.com/loser-stamp-loser-sign-round-grunge-label-image385127990.html
-https://nesmaps.com/maps/Contra/sprites/ContraSprites.html
+https://github.com/david-campos/Contra \\
+https://www.alamy.com/loser-stamp-loser-sign-round-grunge-label-image385127990.html \\
+https://nesmaps.com/maps/Contra/sprites/ContraSprites.html \\
 
 ### Về source code game:
 
