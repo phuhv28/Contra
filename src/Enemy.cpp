@@ -312,7 +312,6 @@ void Enemy3::chooseStatus(int playerX, int playerY)
     if (x1 < 0)
         angle = 2 * M_PI - angle;
 
-    // std::cout << angle / M_PI * 180 << " ";
 
     if ((angle >= (345.0 / 180 * M_PI)) || (angle < (15.0 / 180 * M_PI)))
     {
@@ -363,7 +362,6 @@ void Enemy3::chooseStatus(int playerX, int playerY)
         status = Enemy3Action::AIM_330_DEGREE;
     }
 
-    // std::cout << (int)status << " ";
 }
 
 void Enemy3::createBullet(int playerX, int playerY)

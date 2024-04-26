@@ -381,7 +381,6 @@ void Game::handleCol()
                 if (!player.isDead() && !player.isInvincible())
                 {
                     player.setDied();
-                    std::cout << 1 << " ";
                 }
             }
             for (int j = 0; j < bulletList.size(); j++)
@@ -410,7 +409,6 @@ void Game::handleCol()
                 if (!player.isDead() && !player.isInvincible())
                 {
                     player.setDied();
-                    std::cout << 2 << " ";
                 }
             }
 
@@ -423,7 +421,6 @@ void Game::handleCol()
                     if (!player.isDead() && !player.isInvincible())
                     {
                         player.setDied();
-                        std::cout << 3 << " ";
                     }
                 }
             }
@@ -459,7 +456,6 @@ void Game::handleCol()
                     if (!player.isDead() && !player.isInvincible())
                     {
                         player.setDied();
-                        std::cout << 4 << " ";
                     }
                 }
             }

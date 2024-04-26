@@ -460,7 +460,6 @@ void Player::setDied()
 
 void Player::action(Map map)
 {
-    std::cout << x << " ";
     if (x >= MAX_MAP_X * TILE_SIZE - 90)
     {
         status.action = Action::WIN;
@@ -515,7 +514,6 @@ void Player::action(Map map)
     {
         VelY = GRAVITY;
         status.onGround = false;
-        std::cout << 1;
     }
 
     x += VelX;
