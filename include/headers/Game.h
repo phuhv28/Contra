@@ -18,7 +18,6 @@ public:
     std::vector<Enemy2 *> createEnemies2();
     std::vector<Enemy3 *> createEnemies3();
     void handleCol();
-    void renderGamePlay();
     bool checkCol(const SDL_Rect &a, const SDL_Rect &b);
     void handleEnemy();
     void removeEnemy(int enemyType, int index);

@@ -78,9 +78,8 @@ int main(int argc, char *argv[])
 {
     init();
 
-    SDL_Surface *icon = IMG_Load("res/img/icon.png");
-    SDL_SetWindowIcon(window, icon);
-
+    // SDL_Surface *icon = IMG_Load("res/img/icon.png");
+    // SDL_SetWindowIcon(window, icon);
 
     bool playAgain = false;
 
