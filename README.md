@@ -1,6 +1,6 @@
 # Contra - HVP-Edition
 
-- Demo game: 
+- Demo game: https://drive.google.com/drive/folders/19YgoPM-l3qnHFJII6gBw79AC55ggN7K7?usp=sharing
 
 # Giới thiệu game
 
@@ -69,15 +69,53 @@ Hoặc Chọn Code -> Download Zip (66.8 MB).
 # 3. Cách chơi
 
 Di chuyển tiến lên phía trước, tránh đạn để không chết, bắn kẻ địch để tiêu diệt kẻ địch.
+
 Dùng nút mũi tên trái phải trên bàn phím để di chuyển trái phải.
-Dùng nút mũi tên lên trên bàn phím để ngắm lên phía trên:
+<div style="text-align: center;">
+
+![ezgif com-video-to-gif](res/preview/walking.gif)
+
+</div>
+Dùng nút mũi tên lên trên bàn phím để ngắm lên phía trên.
 + Ấn mũi tên lên khi đứng yên thì nhân vật sẽ hướng súng thẳng đứng lên trên.
+<div style="text-align: center;">
+
+![ezgif com-video-to-gif](res/preview/aim_up.gif)
+
+</div>
 + Ấn mũi tên lên khi di chuyển trái (phải) thì nhân vật sẽ hướng súng lên góc trên bên trái (phải) khi di chuyển.
+<div style="text-align: center;">
+
+![ezgif com-video-to-gif](res/preview/aim_up_right.gif)
+
+</div>
 Dùng nút mũi tên hướng xuống trên bàn phím để nằm hoặc ngắm bắn bên dưới:
 + Ấn mũi tên hướng xuống khi đứng yên thì nhân vật sẽ nằm xuống.
+<div style="text-align: center;">
+
+![ezgif com-video-to-gif](res/preview/lay_down.gif)
+
+</div>
 + Ấn mũi tên hướng xuống khi di chuyển trái (phải) thì nhân vật sẽ hướng súng lên góc dưới bên trái (phải) khi di chuyển.
+<div style="text-align: center;">
+
+![ezgif com-video-to-gif](res/preview/aim_down_right.gif)
+
+</div>
 Ấn nút Z để bắn.
+<div style="text-align: center;">
+
+![ezgif com-video-to-gif](res/preview/fire.gif)
+
+</div>
 Ấn nút X để nhảy hoặc rơi xuống (Khi đang nằm, ấn nút X để rơi xuống).
+
+<div style="text-align: center;">
+
+![ezgif com-video-to-gif](res/preview/jump.gif)
+![ezgif com-video-to-gif](res/preview/fall_down.gif)
+
+</div>
 
 # 4. Chiến thắng và thất bại
 
@@ -100,9 +138,9 @@ Dùng nút mũi tên hướng xuống trên bàn phím để nằm hoặc ngắm
 
 Sử dụng trên Internet và có chỉnh sửa đôi chút.
 Nguồn:
-https://github.com/david-campos/Contra \\
-https://www.alamy.com/loser-stamp-loser-sign-round-grunge-label-image385127990.html \\
-https://nesmaps.com/maps/Contra/sprites/ContraSprites.html \\
++ https://github.com/david-campos/Contra
++ https://www.alamy.com/loser-stamp-loser-sign-round-grunge-label-image385127990.html
++ https://nesmaps.com/maps/Contra/sprites/ContraSprites.html
 
 ### Về source code game:
 
